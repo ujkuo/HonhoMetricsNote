@@ -1,0 +1,401 @@
+\documentclass{Theme}
+\week{2}
+\date{Nov. 10, 2022}
+%\newcommand{\tand}{\text{and}}
+%\newcommand{\frn}{\frac{1}{n}}
+
+\begin{document}
+\ujtitle
+
+\section{Asymptotics (Large-Sample Theory)}
+Typically, in stats or econometrics, we derive the properties of estimators
+by \hl{taking expectations} and \hl{taking sample size goes to infinity}.
+For example, given \iid\ data $y_1,\cdots,y_n$ and the corresponding
+expectation $\E{y_i}=\mu$,
+we are able to estimate 
+\barc 
+  \hat{\mu}\equiv\frac{1}{n}\sumn y_i & \tand & \E{\hat{\mu}}=\mu.
+\earc
+
+Another example yeilds
+\barc
+\hat{\beta}_\ols & = & \br{\frac{1}{n}\sumn x_ix_i'}\inv\br{\frac{1}{n}\sumn x_iy_i} \\
+& \pto & \br{\E{x_ix_i'}}\inv\E{x_iy_i}
+\earc
+
+\subsection{Law of Large Numbers}
+Given $z_1,z_2,\cdots,z_n$ are \iid\ (not necessary),
+we have 
+\barc
+\bar{z}_n\equiv \frac{1}{n}\sumn z_i
+& \text{and} & \hl{\bar{z}_n\pto\E{z_i}}
+\earc
+Note that it is Weak Law of Large Number (WLLN)
+and almost-sure convergence here.
+
+\subsection{Central Limit Theorem}
+Given $z_1,z_2,\cdots,z_n$ are \iid\ (not necessary) 
+and $\E{z_i}\equiv\mu$,
+where $z_i$ are $k\times 1$ vectors,
+we have 
+\[
+  \hl{\sqrt{n}(\bar{z}_n-\mu)\dto\nor{0,\E{(z_i-\mu)(z_i-\mu)'}}},
+\]
+where $\E{(z_i-\mu)(z_i-\mu)'}\equiv\var{z_i}$.
+
+\section{Least Square}
+Given the data 
+\[
+  \begin{array}{LLL}
+    y_1, & y_2,\cdots,y_n & \text{dependent variables} \\
+    1\times1 & & \\
+    x_1, & x_2,\cdots,x_n & \text{independent variables,} \\
+    k\times1 & &
+\end{array}
+\]
+we define
+\barc
+Y\equiv\col{y_1 \\ y_2 \\ \vdots \\ y_n} & \text{and}
+& X\equiv\col{x_1' \\ x_2' \\ \vdots \\ x_n'}.
+\earc
+\begin{thm} % change to theorem 
+  Suppose $g(x_i)$ is some function of $x_i$. Then,
+  the conditional mean of $y_i$, $\E{y_i \mid x_i}\equiv\mu_i$,
+  minimize $\E{y_i-g(x_i)}^2$.
+  That is, $g(x_i)=\mu_i$ is the minimizer.
+\end{thm} 
+Denote the predicted $y_i$ as $\hat{y_i}$
+and define ${\hE{\cdot}}\equiv\frac{1}{n}\sumn\br\cdot$,
+we want to minimize
+\barc
+Q_\infty(\be)\equiv\E{y_i-\hat{y}_i}^2 & \text{and} & Q_n(\be)\equiv{\hE{y_i-\hat{y}_i}^2}
+\earc
+by using linear curve $\hat{y}_i=x_i'\beta$,
+where $x_i'$ and $\beta$ are $1\times k$ and $k\times1$
+vectors, respectively.
+Note that econometrisians call $Q$ as the objective function,
+and statistisians call it as the criterion function.
+
+\begin{thm}% thm as well
+  The minimizer of $\E{y_i-x_i'\beta}^2$ is 
+  \[
+    \be_\infty = \br{\E{x_ix_i'}}\inv\br{\E{x_iy_i}}.
+  \]
+  The minimizer of ${\hE{y_i-\hat{y}_i}^2}$
+  is 
+  \[
+    \hat{\be}=\br{\hE{x_ix_i'}}\inv\br{\hE{x_iy_i}}.
+  \]
+\end{thm}
+
+Here, if we define 
+\[
+  \begin{array}{LCL}
+    e_i\equiv y_i-x_i'\be_\infty & \text{and} & \hat{e}_i\equiv y_i-x_i'\hat{\be} \\
+    E\equiv\col{e_1 \\ \vdots \\ e_n} & & \hat{E}\equiv\col{\hat{e_1} \\ \vdots \\ \hat{e_n}}.
+  \end{array}
+\]
+then 
+\barc
+\E{x_ie_i}=0 & \text{and} & {\hE{x_i\hat{e}_i}}=0.
+\earc 
+Assume observations are \iid\, since
+\barc
+{\hE{x_ix_i'}}\pto\E{x_ix_i'} & \text{and} &
+{\hE{x_iy_i}}\pto\E{x_iy_i}
+\earc
+therefore, we obtain $\hat{\be}\pto\be_\infty$.
+
+\begin{remark}
+  $x_i'\beta_\infty$ may not to be the \hl{true} $\mu_i$
+  but we know $\hat{\be}$ converges to $\be_\infty$.
+\end{remark}
+\begin{remark}
+  \[
+    \begin{array}{L}
+      Q_n(\be)=\frac{1}{n}\sumn(y_i-x_i'\beta)^2\pto Q_\infty(\beta)=\E{y_i-x_i'\beta}^2\\
+      \hat{\beta}\equiv\argmin_\beta Q_n(\beta)\pto\be_\infty\equiv\argmin_\be Q_\infty(\beta).
+    \end{array}
+  \] 
+  Typically, in econometrics textbook, $\beta_\infty$ is the true parameters.
+  That is, \hl{consistency means that estimators converge to true parameters in probability}.
+\end{remark}
+
+\subsection{Finite sample properties}
+Given the model $Y=X\be_\infty+E$, we have 
+\barc 
+\hat{\beta}=\br{X'X}\inv\br{X'Y}& \text{and} &
+\hat{\be}=\be_\infty+\br{X'X}\inv X'E.
+\earc
+Note that $X$ and $Y$ are $n\times k$ and $n\times1$ matrix and vector.
+
+\begin{itemize} 
+  \item 
+    We say the parameter as unbiasedness if $\E{\hat{\be}\mid X}=\beta_\infty$
+by assuming $\E{E\mid X}=0$.
+  \item We obtain 
+\[
+  \E{\br{\hat{\be}-\be_\infty}\br{\hat{\be}-\be_\infty}'\mid X}=\si^2\br{X'X}\inv 
+\]
+by assuming $\E{EE'\mid X}=\si^2I_n$.
+\item If $E\sim\nor{0,\si^2I_n}$, we obtain
+  \[
+    \hat{\be}\mid X\sim\nor{\be_\infty,\hl{\si^2\br{X'X}\inv}}.
+  \]
+\end{itemize}
+
+\subsection{Asymptotic properties (Large-Sample properties)}
+Given the model $y_i=x_i'\be_\infty+e_i$, we have
+\[
+    \hat{\be}=\br{\frac{1}{n}\sumn x_ix_i'}\inv\br{\frac{1}{n}\sumn x_iy_i}
+    =\be_\infty+\br{\frac{1}{n}\sumn x_ix_i'}\inv\br{\frac{1}{n}\sumn x_ie_i}.
+\]
+The last part is sometimes called the \hl{sampling error}.
+Note that since $\frac{1}{n}\sumn x_ie_i\pto\E{x_ie_i}=0$,
+we have the consistency property 
+\[
+  \hat{\beta}\pto\beta_\infty.
+\]
+Next, by re-scaling and the substraction, the estimators turns to 
+\[
+  \sqrt{n}\br{\hat{\be}-\be_\infty}=\br{\frn\sumn x_ix_i'}\inv\hl{\br{\sqrt{n}\frn\sumn x_ie_i}}.
+\]
+By CLT, 
+\[
+  \sqrt{n}\br{\frn\sumn x_ie_i - \E{x_ie_i}}\dto\nor{0,\E{x_ix_i'e_i^2}}
+\]
+since $\E{x_ie_i}=0$, therefore, it alters to 
+\barc
+  \sqrt{n}\br{\hat{\be}-\be_\infty} & = & \br{\frn\sumn x_ix_i'}\inv\hl{\br{\sqrt{n}\frn\sumn x_ie_i}} \\
+  & \dto & \br{\E{x_ix_i'}}\inv\nor{0,\E{x_ix_i'e_i^2}} \\ 
+  & \to & \nor{0, \br{\E{x_ix_i'}}\inv\E{x_ix_i'e_i^2}\br{\E{x_ix_i'}}\inv}.
+\earc
+Assume that $\E{x_ix_i'e_i^2}=\E{x_ix_i'}\si^2$, where $\si^2\equiv\E{e_i^2}$,
+the asymptotic covariance matrix is $\hl{\si^2\br{\E{x_ix_i'}}\inv}$.
+\begin{remark}
+  The existence of inverse $\br{X'X}\inv$ and $\br{\E{x_ix_i'}}\inv$
+  means that there is no perfect multi-collinearity.
+\end{remark}
+
+\begin{thm} % thm 
+  $\br{X'X}\inv$ exists if and only if the columns of $X$ are
+  linearly independent.
+  To elaborate, the eigenvalues of $X'X$ are not equal to $0$.
+\end{thm}
+Note that 
+\[
+  \plinf\frn X'X=\E{x_ix_i'}.
+\]
+
+The existence issues mentioned in the remark and the theorem above 
+reveals the identification; that is, we can identify the \hl{unknown}
+parameters.
+
+\subsection{Identification}
+These equations are identical:
+\barc 
+\E{x_ix_i'}\beta & = & \E{x_iy_i} \\[3mm]
+\br{\frn\sumn x_ix_i'}\beta & = & \frn\sumn x_iy_i \\[3mm]
+\br{X'X}\beta & = & X'Y 
+\earc
+Here if the inverse of $X'X$ exists; that is,
+$X'X$ has $k$ equations and we have $k$ unknown $\be$.
+
+Note: chi-square are the square of normal distribution.
+
+\subsection{Projection and residual}
+The projection matrix is defined as $P\equiv X\br{X'X}\inv X'$.
+To represent the projection matrix mathematically, it projects vectors
+into the subspace spanned by columns of $X$.
+To elaborate, for any vector $V$, $PV$ is the linear combination of 
+columns of $X$.
+
+To be more econometrics, it comes from
+\[
+  \hat{Y}=X\hat{\be}=X\br{X'X}\inv X'Y\equiv PY.
+\]
+
+Now, we define another matrix $M\equiv I_n-P$, where $M$ is $n\times n$.
+We have the following properties for $M$ and $P$:
+\begin{itemize}
+  \item $P$, $M$ are symmetric.
+  \item $PP=P$.
+  \item $MM=M$.
+  \item $\hl{PM=0}$ (important in the calculation of prediction errors).
+  \item $trace(P)=k$ and $trace(M)=n-k$.
+    For any square matrix $A$, $trace(A)$ is the sum of diagnol entries of $A$.
+    Moreover, $trace(AB)=trace(BA)$.
+\end{itemize}
+
+\subsection{Prediction error}
+Suppose we have the true \hl{in-sample} data and model $y_i^{in}=\mu_i+e_i^{in}$
+generated and estimated by in-sample data $x_i$, and there exists 
+an \hl{out-sample} data $y_i^{out}$ generated by \hl{same in-sample $x_i$},
+i.e., $y_i^{out}=\hl{\mu_i}+e_i^{out}$.
+Note that $y_i=\mu_i+e_i$ is really the \hl{true model} given $\E{y_i\mid x_i}\equiv\mu_i\iff e_i\equiv y_i-\mu_i$.
+Now, we want to calculate the expected square errors
+\barc 
+\E{\br{Y^{in}-\hat{Y}}'\br{Y^{in}-\hat{Y}}\mid X} & \tand &
+\E{\br{Y^{out}-\hat{Y}}'\br{Y^{out}-\hat{Y}}\mid X}
+\earc
+to specify the prediction power of the model.
+Observe that 
+\barc 
+Y^{in}-X\hat{\be} & = & \mu+E^{in}-X\hat{\be} \\
+& = & \mu + E^{in} - X\br{X'X}\inv X'(\mu+E^{in}) \\
+& = & (I-P)\mu+(I-P)E^{in} \\
+Y^{out}-X\hat{\be} & = & \mu+E^{out}-X\hat{\be} \\
+& = & \mu + E^{out} - X\br{X'X}\inv X'(\mu+E^{in}) \\
+& = & (I-P)\mu+E^{out}-PE^{in}.
+\earc
+Hence, we can take the expectation of the square error 
+\barc 
+\E{\br{Y^{in}-\hat{Y}}'\br{Y^{in}-\hat{Y}}\mid X} & = & 
+\E{\mu'M'M\mu+E^{in}'M'ME^{in}+\mu'M'ME^{in}+E^{in}'M'M\mu} \\ 
+& = & (n-k)\si^2+\mu'(I-P)\mu \\ 
+& & \text{(Since $\mu'M'ME^{in}=E^{in}'M'M\mu=0$)} \\ 
+\E{\br{Y^{out}-\hat{Y}}'\br{Y^{out}-\hat{Y}}\mid X} & = & 
+\mathbb{E}\bigg[\hl{\mu'M'M\mu}+\mu'M'E^{out}-\mu'M'PE^{in}+E^{out}M\mu+\hl{E^{out}'E^{out}} \\
+& &
+-E^{out}'PE^{in}+E^{in}'PM\mu-E^{in}'P'E^{out}+\hl{E^{in}'P'PE^{in}}\mid X\bigg] \\
+& = & (n+k)\si^2+\mu'(I-P)\mu.
+\earc
+Only the \hl{highlighted terms} remain, and others go to 0 after taking the expectation.
+The reasons for being 0 include
+\begin{description}
+  \item[Independence:] $\mu$ and $E^{out}$; $E^{in}$ and $E^{out}$
+    are independent.
+    Therefore, the expectation term goes to 0.
+  \item[PM Matrix:] $PM=0$ by definition.
+\end{description}
+
+By dividing into $n$, prediction errors alter to 
+\barc 
+\frn \E{\br{Y^{in}-\hat{Y}}'\br{Y^{in}-\hat{Y}}\mid X}
+& = & \si^2\hl{-\frac{k}{n}\si^2}+\frn\mu'(I-P)\mu \\[3mm]
+\frn \E{\br{Y^{out}-\hat{Y}}'\br{Y^{out}-\hat{Y}}\mid X}
+& = & \si^2\hl{+\frac{k}{n}\si^2}+\frn\mu'(I-P)\mu.
+\earc 
+Note that when $k>n$ ($k$ is the number of variables), $X'X$ is not invertible.
+Consequently, it is not a case.
+
+Now, comparing in-sample and out-sample prediction errors yeilds
+\[
+\E{\br{Y^{out}-\hat{Y}}'\br{Y^{out}-\hat{Y}}\mid X}-
+\E{\br{Y^{in}-\hat{Y}}'\br{Y^{in}-\hat{Y}}\mid X}
+= 2k\si^2\ \text{(treated as a penalty).} 
+\]
+
+There are many choices of the variable sets. Conventionally, people
+use the biggest approximating linear model to estimate $\si^2$.
+
+\begin{remark}
+\hfill
+\begin{itemize}
+  \item The in-sample prediction error always suggests to use more complex models. 
+  \item However, the out-sample prediction error exhibits a trade-off between \hl{bias}
+    and \hl{variance}. It penalizes too much variables.
+\end{itemize} 
+\end{remark}
+
+\begin{remark}
+  For any matrix $A$,
+  \barc 
+  \E{E'AE} & = & trace\br{\E{E'AE}} \\
+  & = & \E{trace\br{E'AE}} \\
+  & = & \E{trace\br{AEE'}} \\
+  & = & trace\br{A\E{EE'}} \\
+  & = & trace\br{A\si^2 I_n} \\
+  & = & \si^2trace(A).
+  \earc
+\end{remark}
+
+\section{Model Selection Theory}
+\subsection{Mallows CP}
+Mallows CP calculates 
+\[
+  \E{\br{\mu-\hat{\mu}}'\br{\mu-\hat{\mu}}\mid X} = k\si^2+\mu'(I-P)\mu,
+\]
+where $\hat{\mu}=\hat{Y}=\hat{X}\hat{\beta}$.
+The result is similar to the out-sample prediction error.
+
+\section{Nonlinear Least Square (NLS)}
+Given \iid\ data 
+\[
+  \begin{array}{LLL}
+    y_1, & y_2,\cdots,y_n & \text{dependent variables} \\
+    1\times1 & & \\
+    x_1, & x_2,\cdots,x_n & \text{independent variables,} \\
+    k\times1 & &
+\end{array}
+\]
+and the model $y_i=f(x_i;\be)+e_i$. The objective function is 
+\barc
+Q_n(\be)\equiv\frn\sumn\br{y_i-f(x_i;\be)}^2 & \pto & 
+Q_\infty(\be)\equiv\E{y_i-f(x_i;\beta)}^2.
+\earc
+Here, econometrisians impose some restrictions:
+\begin{description}
+  \item[Identification assumption:]
+    $\be_\infty\equiv\argmin_\be Q_\infty(\beta)$ uniquely exists.
+  \item[Probability convergence assumption:]
+    $Q_n(\beta)\pto Q_\infty(\be)$ uniformly.
+\end{description}
+Then, we have 
+\[
+  \hat{\beta}\equiv\argmin_\beta Q_n(\beta)\pto 
+  \beta_\infty\equiv\argmin_\be Q_\infty(\beta),
+\]
+i.e., a consistent estimator.
+
+\subsection{Statistical properties}
+FOC results in the estimated parameter (here $\hat{\be}$). 
+Clearly,
+\[
+  0=\pdv{Q_n(\hat{\beta})}{\beta}
+  =\frac{-2}{n}\sumn\br{y_i-f(x_i;\hat{\beta})}\pdv{f(x_i;\hat{\beta})}{\beta}.
+\]
+Therefore, we need to use numerical methods to solve the nonlinear problems.
+
+\subsection{Mean value theorem}
+However, we can still estimate the nonlinear function by using the \hl{mean value theorem}.
+\[
+  0=\pdv{Q_n\br{\hat{\beta}}}{\beta}=\pdv{Q_n(\beta)}{\beta}
+  +\ppdv{Q_n(\hl{\beta_m})}{\beta}{\beta'}\br{\hat{\be}-\beta},
+\]
+where $\be_m\in[\hat{\be},\be]$. Since $\hat{\be}\pto\beta$,
+therefore, it gives $\be_m\pto\be$.
+Moreover, re-writing the NLS problem as an asymptotic form gives 
+\[
+  \sqrt{n}\br{\hat{\be}-\be}=\br{\ppdv{Q_n(\be_m)}{\beta}{\beta'}}\inv 
+  \br{-\sqrt{n}\pdv{Q_n(\be)}{\be}}.
+\]
+If 
+\[
+  -\sqrt{n}\pdv{Q_n(\be)}{\be}\dto\nor{0,\plinf\br{n\pdv{Q_n(\be)}{\beta}\pdv{Q_n(\be)}{\be'}}},
+\]
+then the distribution asymptotes to 
+\[
+  \sqrt{n}\br{\hat{\beta}-\beta}\dto 
+  \nor{0,\br{\plinf\ppdv{Q_n(\be)}{\beta}{\beta'}}\inv\br{\plinf n\pdv{Q_n(\be)}{\be}\pdv{Q_n(\be)}{\be'}}\br{\plinf\ppdv{Q_n(\be)}{\beta}{\beta'}}\inv}.
+\]
+In addition,
+\[
+  \pdv{Q_n(\be)}{\be}=\frn\sumn\pdv{f_i(\be)}{\be}e_i,
+\]
+which leads to 
+\barc
+\plinf\br{n\pdv{Q(\be)}{\be}\pdv{Q(\be)}{\be'}}
+=\E{\pdv{f_i(\be)}{\be}\pdv{f_i(\be)'}{\be}}
+& \tand & 
+\plinf\ppdv{Q_n(\be)}{\beta}{\beta'}
+=\E{\pdv{f_i(\be)}{\be}\pdv{f_i(\be)'}{\be}}.
+\earc 
+As a result, the asymptotic covariance of the NLS is 
+\[
+  \si^2\br{\E{\pdv{f_i(\be)}{\be}\pdv{f_i(\be)}{\be'}}}\inv.
+\]
+
+
+\end{document}
+

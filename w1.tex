@@ -1,0 +1,409 @@
+\documentclass{Theme}
+\week{1}
+\date{Nov. 3, 2022}
+%\setlength{\nomlabelwidth}{1cm}
+\begin{document}
+\ujtitle
+\section{What is Econometrics}
+\begin{itemize}
+    \item Part of \hl{statistics}.
+    \item The statistical methods motivated by problems
+    in \hl{economics} and \hl{social science}.
+\end{itemize}
+
+\section{Philosophy}
+\begin{itemize}
+    \item Persona $\iff$ Shadow in your mind $\Leftarrow$ Psychoanalysis.
+    \item Mind $\iff$ Body.
+    \item Observers, organizer (Society, human) $\iff$ Being observed environment + everything.
+    \item Tightness for muscle causes the 
+    anxiety and tiredness.
+    \item Duality $\iff$ Non-dual $\Rightarrow$
+    Generate \hl{cutoffs} in each line.
+\end{itemize}
+
+\section{Science}
+\begin{itemize}
+    \item Science is the study of \hl{observation}.
+    \item \hl{Data} are \hl{quantified} by observations.
+    Things are interpreted as sequences of random variables
+    or vectors. For example, we may have the observation
+    \[
+        \left\{
+        \begin{pmatrix}
+        y_1 \\ x_1 \\ z_1
+        \end{pmatrix},
+        \begin{pmatrix}
+        y_2 \\ x_2 \\ z_2
+        \end{pmatrix},\cdots,
+        \begin{pmatrix}
+        y_i \\ x_i \\ z_i
+        \end{pmatrix},\cdots
+        \right\},
+    \]
+    where $i$ denotes individuals.
+    
+    The sequences follow some \hl{distributions},
+    for example, 
+    \[
+    \pr{\left\{
+        \begin{pmatrix}
+        y_1 \\ x_1 \\ z_1
+        \end{pmatrix},
+        \begin{pmatrix}
+        y_2 \\ x_2 \\ z_2
+        \end{pmatrix},\cdots,
+        \begin{pmatrix}
+        y_i \\ x_i \\ z_i
+        \end{pmatrix},\cdots
+        \right\}}.
+    \]
+    
+    We obtain a special case: the individual
+    observations are identically independently
+    distributed {\it (i.i.d.)}
+    \[
+        \pr{\begin{matrix}
+        y_1 \\ x_1 \\ z_1
+        \end{matrix}},
+        \pr{\begin{matrix}
+        y_2 \\ x_2 \\ z_2
+        \end{matrix}},\cdots,
+        \pr{\begin{matrix}
+        y_i \\ x_i \\ z_i
+        \end{matrix}},\cdots
+    \]
+    \item Data is the \hl{observed}, \hl{realized}
+    sequences. For example,
+    \[
+        \left\{
+        \col{
+        y_1 \\ x_1 \\ z_1
+        },
+        \begin{pmatrix}
+        y_2 \\ x_2 \\ z_2
+        \end{pmatrix},\cdots,
+        \begin{pmatrix}
+        y_i \\ x_i \\ z_i
+        \end{pmatrix},\cdots,
+        \begin{pmatrix}
+        y_n \\ x_n \\ z_n
+        \end{pmatrix}
+        \right\}
+        =
+        \left\{ 
+        \begin{pmatrix}
+        y_i \\ x_i \\ z_i
+        \end{pmatrix}\right\}^n_{i=1},
+    \]
+    where $n$ denotes the sample size or the 
+    number of observations.
+\end{itemize}
+
+\section{Types of Data}
+
+\begin{description}[leftmargin=!,labelwidth= \widthof{\bfseries Multiple-indexed}]
+    \item[Single-indexed]
+    $y_i, x_i$: $i$ denotes individuals
+    \hl{(Cross-sectional data)} \\
+    $y_t, x_t$: $t$ denotes discrete/continuous
+    time \hl{(Time-series data)}
+    \item[Multiple-indexed]
+    $y_{it}, x_{it}$: \hl{(Panel data)} \\
+    $y_{ijt}, x_{ijt}$: \hl{(Multi-dimensional panel spatial data)}
+\end{description}
+
+\section{Model}
+Model is the probability distribution over a sequence of
+random variables or vectors. For example,
+\begin{itemize}
+    \item We have a sequence $y_1,y_2,\cdots,y_i,\cdots,y_n$.
+    For each $i$, $y_i\sim \nor{\mu_i,\sigma_i^2}$.
+    Then, we estimate $\mu_i, \sigma_i^2$ for all $i$.
+    \item We have two sequence
+    $y_1,y_2,\cdots,y_i,\cdots,y_n$ and 
+    $x_1,x_2,\cdots,x_i,\cdots,x_n$.
+    For all $i$, the model represents
+    \[
+        y_i=x_i'\beta + e_i,
+    \]
+    where $e_i\sim \nor{0,\sigma^2}$.
+    We then want to estimate $\beta$, where $\beta$ is
+    \hl{the parameters of interest}.
+    
+    Note that $y_i,x_i$ and $\beta$ are $1\times1, 1\times k$, and $k\times1$ vectors.
+\end{itemize}
+
+\section{Micro-foundations}
+Whenever an (econometrics) model is derived from an 
+\hl{economic model (optimization problem)},
+we say that the model has a micro-foundation.
+
+Parameters in econometrics model are functions of the 
+primitive parameters in utility function or 
+production functions, etc.
+
+\section{Exogeneity and Endogeneity}
+\begin{itemize}
+    \item Exogenous (given) 
+    variables are variables determined
+    outside the world.
+    \item Endogenous variables are variables determined
+    inside the model.
+    Typical description of endogeneity in econometrics
+    textbooks represents
+    \[
+        \E{x_ie_i}\neq0.
+    \]
+    This statement indicates that there are some variables
+    in $x_i$ that are determined by conditions
+    or equations not in the current model. A typical solution
+    described in the textbook is \hl{to add equations to
+    complete the model}.
+\end{itemize}
+
+\section{Topics}
+The following classes will cover topics including
+\begin{enumerate}
+    \item Unbiased and consistent conditions (as the sample size
+    goes to infinity).
+    \item Constrained estimation.
+    \item Shrinkage estimation \hl{(biased and inconsistent)}.
+    Why we need to discuss such a biased and inconsistent estimator
+    is that there is a trade-off between variance
+    (Cramer Rao lower bound) and bias. We concern the prediction
+    error (prediction performance, in other words)
+    in some model. A simple description is
+    \[
+      \E{y_i-\hat{y_i}}^2=|bias|^2+Variance.
+    \]
+    \item Asymptotic theory (also known as 
+    \hl{large-sampe theory}, discussing the properties
+    when the sample size goes to infinity).
+\end{enumerate}
+The textbook refers to Bruce Hanson, Econometrics.
+
+\section{Consistent Estimation}
+\subsection{Least square}
+Criterion or objective functions satisfy the following form
+\[
+    \frac{1}{n}\sum_{i=1}^n\left(y_i-f(x_i;\beta)\right)^2
+    \text{ or } \E{y_i-f(x_i;\beta)}^2,
+\]
+where $\beta$ is a $k\times1$ vector and denotes 
+the parameters of interest. $k$ is the number of parameters.
+
+Suppose we have data 
+\[
+    \begin{array}{CCCCC}
+        y_1 & \cdots & y_i & \cdots & y_n \\
+        x_1 & \cdots & x_i & \cdots & x_n \\
+        k\times1 & & k\times1 & & k\times1,
+    \end{array}
+\]
+we denote the conditional expectation of $y$ by 
+$\mu_i\equiv\E{y_i\mid x_i}$, define 
+$\ve_i\equiv y_i-\E{y_i\mid x_i}$, and impose an assumption
+$\E{\ve_i\mid x_i}=0$.
+
+Suppose $g(x_i)$ are some functions of $x_i$,
+we want to minimize $\E{y_i-g(x_i)}^2$, which can be 
+expanded to
+\[
+    \begin{array}{RCL}
+        \E{y_i-g(x_i)}^2 & = & 
+        \E{y_i-\mu_i+\mu_i-g(x_i)}^2 \\[2mm]
+        & = & \E{(y_i-\mu_i)^2+(\mu_i-g(x_i))^2
+        +2(y_i-\mu_i)(\mu_i-g(x_i))} \\[2mm]
+        & = & \E{\ve^2} + \E{\mu_i-g(x_i)}^2 \\[2mm]
+        & \hl{\geq} & \hl{0}.
+    \end{array}
+\]
+\hl{The minimizer here is to choose $g(x_i)=\mu_i=\E{y_1\mid x_i}$.}
+
+Now we turn into another scenario.
+Suppose we have the following minimization problem
+\[
+\min_\beta\ \E{y_i-x_i'\beta}^2\equiv Q(\beta),
+\]
+and we define $\beta_0\equiv\argmin \E{y_i-x_i'\beta}^2$.
+The FOC of $Q(\beta)$ gives 
+\[
+    \frac{\partial Q}{\partial \beta}\E{2x_i(y_i-x_i'\beta_0)}=0.
+\]
+Here, $\beta_0$ is obtained by 
+$\beta_0=\E{x_ix_i'}\inv\E{x_iy_i}$
+Now, we define $e_i\equiv y_i-x_i'\beta_0$,
+we \hl{must} automatically hold the result
+\[
+\begin{array}{RCL}
+    \E{x_ie_i} & = & \E{x_i(y_i-x_i'\beta_0)} \\
+    & = & \E{x_iy_i-x_ix_i'\E{x_ix_i'}\inv\E{x_iy_i}}
+    \quad \text{(Assume $\E{x_ix_i'}$ is invertible)}\\
+    & = & \hl{0}. \quad \textbf{\hl{why???????}}
+\end{array}
+\]
+\hl{However, $x_i'\beta$ may not be the true $\E{y_i\mid x_i}$.}
+
+In general, we can summarize the above problem as
+\[
+\beta_0=\argmin_\beta\E{y_i-f(x_i;\beta)}^2.
+\]
+If we define $e_i\equiv y_i-f(x_i;\beta)$, then
+$\E{\frac{\partial f_i}{\partial\beta}e_i}=0$.
+
+In advance, suppose we have the following problem
+\[
+Q_n(\beta) \equiv\frac{1}{n}\sum_{i=1}^n(y_i-x_i'\beta)^2,
+\]
+we have
+\[
+\hat{\beta}\equiv\argmin_\beta Q_n(\beta)
+=\br{\frac{1}{n}\sum_{i=1}^n x_ix_i'}\inv\left(\frac{1}{n}\sum_{i=1}^n x_iy_i'\right).
+\]
+\subsubsection{Law of large number}
+Suppose $z_1,\cdots,z_n$ are {\it i.i.d.},
+then
+\[
+\begin{array}{L}
+\frac{1}{n}\sum_{i=1}^nz_i\pto\E{z_i} \\
+\frac{1}{n}\sum_{i=1}^nx_ix_i'\pto\E{x_ix_i'} \\
+\frac{1}{n}\sum_{i=1}^nx_iy_i'\pto\E{x_iy_i'}.
+\end{array}
+\]
+That is, 
+\[
+\hat{\beta}\pto\beta_0.
+\]
+\subsubsection{Remarks on the \hl{true} model}
+\begin{itemize}
+    \item We may define the \hl{true} parameters 
+    as $\beta_0$, then we have $\E{x_ie_i}=0$
+    \item Another way to start the econometrics problem
+    is to define $y_i=x_i'\beta_0+e_i$ with an 
+    \hl{assumption} $\E{x_ie_i}=0$.
+    
+    If $\E{x_ie_i}\neq0$, we need instruments.
+\end{itemize}
+
+\section{Asymptotic Theory}
+{\it (This section refers to the Chapter 6 of the Bruce Hansen's
+econometrics textbook.)}
+
+To discuss the asymptotic properties, we need to define the \hl{limit}
+firstly.
+\begin{defi}
+Suppose we have a \hl{non-random} sequence of numbers  
+$\set{a_1,a_2,\cdots,a_n,\cdots}$,
+\[
+\begin{array}{RCL}
+    a_n\to a \text{ as }n\to \infty
+    & \iff & \lim_{n\to\infty}a_n=a.
+\end{array}
+\]
+Clearly,
+\[
+\forall\ \delta>0, \exists\ n_\delta<\infty \st
+|a_n-a|<\delta\quad\forall n>n_\delta.
+\]
+\end{defi}
+\subsection{Convergence in probability}
+If $z_n$ converges in probability to $z$ as $n\to\infty$,
+we say
+\[
+\begin{array}{RCL}
+    z_n\pto z & \iff & \plim_{n\to\infty}z_n=z.
+\end{array}
+\]
+Clearly, 
+\[
+\forall\ \delta>0, \lim_{n\to\infty}\pr{|z_n-z|\leq\delta}=1.
+\]
+(Some notation states
+$\lim_{n\to\infty}\pr{|z_n-z|>\delta}=0$)
+
+\subsection{Almost sure convergence}
+We denote $z_n$ converging \hl{almost surely} to
+$z$ as $n\to\infty$ by $z_n\asto z$.
+Clearly,
+\[
+\forall\ \delta>0, \pr{\lim_{n\to\infty}|z_n-z|\leq\delta}=1.
+\]
+Note that the almost sure convergence implies
+convergence in probability.
+
+Following the conception of convergence above,
+we can now introduce the law of large number:
+\begin{description}
+    \item[Weak Law of Large Number (WLLN)]
+    $\frac{1}{n}\sum_{i=1}^ny_i\pto \E{y_i}$.
+    The data $y_i$ is i.i.d. here.
+    \item[Strong Law of Large Number (SLLN)]
+    $\frac{1}{n}\sum_{i=1}^ny_i\asto \E{y_i}$.
+    The data $y_i$ is i.i.d. here.
+\end{description}
+
+\subsection{Convergence in distribution}
+Given $z_1,z_2,\cdots,z_n$ as a sequence of random
+variables or vectors,
+and $F_1(z), F_2(z),\cdots,F_n(z)$ are probability
+distributions.
+If $z_n$ converges \hl{in distribution} to $z$,
+says $z_n\dto z$, it gives $F_n(z)\to F(z)$ point-wisely
+(for all continuous point of $F(\cdot)$).
+
+\subsection{Central limit theorem}
+Given an i.i.d. sequence of random variables
+$\set{y_1,y_2,\cdots,y_n}$ and the true expectation
+$\E{y_i}=\mu$, we have
+\[
+\sqrt{n}\left(\frac{1}{n}\sum_{i=1}^ny_i-\mu\right)
+\dto\nor{0,\E{y_i-\mu}^2}.
+\]
+\begin{remark}
+The key conception is {\it independent} in i.i.d. 
+\end{remark}
+\begin{remark}
+The re-scale coefficient $\sqrt{n}$ aims at
+decreasing the convergence speed in distribution to 
+\hl{maintain the randomness}.
+$\frac{1}{n}$ might be too fast.
+\end{remark}
+
+In the case of linear least square, we obtain
+\[
+\hat{\beta}=\left(\frac{1}{n}\sum_{i=1}^nx_ix_i'\right)\inv
+\left(\frac{1}{n}\sum_{i=1}^nx_iy_i'\right),
+\]
+and it implies
+\[
+\begin{array}{RCL}
+    \hat{\beta} - \beta_0 & = &
+    \left(\frac{1}{n}\sum_{i=1}^nx_ix_i'\right)\inv
+\left(\frac{1}{n}\sum_{i=1}^nx_ie_i\right)\quad\textbf{\hl{why??????}} \\
+& \pto & \E{x_ix_i'}\E{x_ie_i} \\
+& \pto & 0.
+\end{array}
+\]
+After re-scaling by $\sqrt{n}$, it alters to
+\[
+\begin{array}{RCL}
+    \sqrt{n}(\hat{\beta} - \beta_0) & = &
+    \left(\frac{1}{n}\sum_{i=1}^nx_ix_i'\right)\inv
+\left(\sqrt{n}\frac{1}{n}\sum_{i=1}^nx_ie_i\right)
+\end{array}
+\]
+and the latter part derives to
+\[
+\sqrt{n}\left(\frac{1}{n}\sum_{i=1}^nx_ie_i-\E{x_ie_i}\right)
+\dto \nor{0,\E{x_ix_i'e_i^2}} \quad \text{since $\E{x_ie_i}=0$.}
+\]
+Hence,
+\[
+\sqrt{n}(\hat{\beta} - \beta_0)\dto 
+\nor{0,\E{x_ix_i'}\inv\E{x_ix_i'e_i^2}\E{x_ix_i'}\inv}.
+\]
+
+
+\end{document}
+

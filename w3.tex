@@ -1,0 +1,255 @@
+\documentclass{Theme}
+\week{3}
+\date{Nov. 17, 2022}
+
+\begin{document}
+\ujtitle
+
+\section{Recap}
+\subsection{Asymptotic Theorems}
+We have a sequence of \iid\ observations 
+$z_1,z_2,\cdots,z_n$, which are vectors of $k\times 1$,
+and the expectation of $z_i$ is $\E{z_i}\equiv\mu$.
+Thus, we have 
+\barc
+\frn\sumn z_i\pto \mu & \tand &
+\sqrt{n}\frn\sumn\br{z_i-\mu}\dto\nor{0,\E{(z_i-\mu)(z_i-\mu)'}}
+\earc
+
+\section{Least Squares}
+Given the criterion / objective function $Q_n(\be)$ and 
+parameters of interest $\beta$ ($k\times1$ vector),
+for any $\beta$, we have the convergence result
+\barc
+Q_n(\be)\pto Q_\infty(\be) & \text{or} & \plinf Q_n(\be)=Q_\infty(\be)
+\earc 
+
+As usual, 
+given the data 
+\[
+  \begin{array}{LLL}
+    y_1, & y_2,\cdots,y_n & \text{dependent variables} \\
+    1\times1 & & \\
+    x_1, & x_2,\cdots,x_n & \text{independent variables,} \\
+    k\times1 & &
+\end{array}
+\]
+we define
+\barc
+Y\equiv\col{y_1 \\ y_2 \\ \vdots \\ y_n} & \text{and}
+& X\equiv\col{x_1' \\ x_2' \\ \vdots \\ x_n'},
+\earc
+where $Y$ and $X$ are $n\times1$ and $n\times k$ matrices, respectively.
+
+For example, in a linear least squares case, we have
+\barc
+Q_n(\be)=\frn\sumn\br{y_i-x_i'\be}^2 & \pto & Q_\infty(\be)=\E{y_i-x_i'\beta}^2,
+\earc 
+which leads to 
+\[
+  \begin{array}{RL}
+    & \hat{\beta}\equiv\argmin_\beta Q_n(\be)=\br{\frn\sumn x_ix_i'}\inv\br{\frn\sumn x_iy_i} \\
+    \pto & \beta_\infty\equiv\argmin_\beta Q_\infty(\be)=\br{\E{x_ix_i'}}\inv\br{\E{x_iy_i}}.
+\end{array}
+\]
+Here we define $e_i\equiv y_i-x_i\beta_\infty$, which leads to $\E{x_ie_i}=0$.
+Next, after substituting $y_i=x_i'\beta_\infty+e_i$ into $\hat{\beta}$, we obtain 
+\[
+  \hl{\hat{\be}-\beta_\infty=\br{\frn\sumn x_ix_i'}\inv\br{\frn\sumn x_ie_i}.}
+\]
+Some books call this \hl{sampling errors} after multiply $\sqrt{n}$.
+\subsection{Statistical properties}
+\begin{thm}
+  \barc
+  \E{\hat{\beta}-\beta_\infty\mid X}= 0 & \text{if} & \E{e_i\mid X}=0
+  \earc
+  We call this \hl{unbiasedess}.
+\end{thm}
+\begin{remark}
+  Note that 
+  \barc
+  \E{e_i\mid x_i}=0 & \implies & \E{e_ix_i} = 0 \\
+  \text{(Stronger)} & \nLeftarrow & \text{(Weaker).}
+  \earc
+\end{remark}
+Moreover, we have 
+\barc 
+\E{\br{\hat{\beta}-\beta_\infty}\br{\hat{\be}-\be_\infty}'\mid X}
+=\si^2\br{\sumn x_ix_i'}\inv = \si^2\br{X'X}\inv
+& \text{if} & \E{e_i^2\mid X}=0.
+\earc
+
+Another property is \hl{consistency}.
+Clearly, $\hat{\be}-\be_\infty\pto0$.
+
+Additionally, we derive the asymptotic covariance matrix as below.
+\barc
+\sqrt{n}\br{\hat{\be}-\be_\infty}\br{\hat{\be}-\be_\infty}'
+& = & 
+\br{\frn\sumn x_ix_i'}\inv\br{\frn\sumn x_ie_i \sum_{\hl{j=1}}^nx_j'e_j}\br{\frn\sumn x_ix_i'}\inv \\
+& = & 
+\br{\frn\sumn x_ix_i'}\inv\br{\frn\sumn x_ix_i'e_i^2 + \frn\sumn\sum_{j=1, j\neq i}^nx_ix_je_ie_j}\br{\frn\sumn x_ix_i'}\inv \\
+& \pto & 
+\br{\E{x_ix_i'}}\inv\E{x_ix_i'e_i^2}\br{\E{x_ix_i'}}\inv \\ 
+& = & \si^2\br{\E{x_ix_i'}}\inv \quad \text{\hl{if $\E{x_ix_i'e_i^2=\E{x_ix_i'}\si^2}$}.}
+\earc
+Therefore, we have the distribution 
+\[
+  \sqrt{n}(\hat{\be}-\be_\infty)\dto\nor{0,\br{\E{x_ix_i'}}\inv\E{x_ix_i'e_i^2}\br{\E{x_ix_i'}}\inv}. 
+\]
+\begin{itemize}
+  \item There is no assumption about what is the \hl{true} model.
+    We just show that the minimize of the \hl{finite sample criterion function $Q_n(\be)$}
+    converges to the minimizer of the \hl{asymptotic criterion function $Q_\infty(\be)$}
+    (as $\hat{\be}\pto\be_\infty$).
+  \item There is \hl{no endogeneity problem} if we define consistency in this way.
+  \item However, this is one of the key differences between statistics and econometrics.
+    In econometrics, we start with a \hl{true} model of a \hl{structural model}.
+    For example, given $y_i=x_i'\be+e_i$ but $\E{x_ie_i}\neq0$,
+    we need to find instruments to solve the problem,
+    so that the estimation is consistent in the sense of converging to the 
+    \hl{true parameters}.
+  \item Note that we may have a system of equations (or called structural form model)
+    \[
+      Y=AY+BX+E,
+    \]
+    where $Y$, $X$, and $E$ are $m\times1$, $A$ and $B$ are $m\times m$.
+    Here we denote $\theta$ by the parameters of interest, and the matrix entries are functions of 
+    $\theta$. To elaborate, we can denote $A$ by $A(\theta)$ and $B$ by $B(\beta)$.
+    Therefore, the reduced form becomes
+    \[
+      Y=\br{I_m-A(\theta)}\inv B(\theta)X+\br{I_m-A(\theta)}\inv E.
+    \]
+\end{itemize}
+
+\subsection{Nonlinear case}
+Given $f(X;\be)$ as a nonlinear function, we have 
+\barc
+Q_n(\be)=\frn\sumn\br{y_i-f(x_i;\beta)}^2 & \pto &
+Q_\infty(\beta)=\E{y_i-f(x_i;\be)}^2 
+\earc
+The FOC yeilds a $k\times1$ matrix 
+\barc 
+  \pdv{Q_n(\be)}{\be}=\frac{-2}{n}\sumn\br{y_i-f(x_i;\be)}\pdv{f_i}{\be}
+  & \pto &
+  \pdv{Q_\infty(\be)}{\be}=-2\E{y_i-f_i}\pdv{f_i}{\be},
+\earc 
+(note that the FOC goes to 0 when $\beta=\beta_\infty$)
+and the second derivative ($k\times k$) is 
+\barc 
+\ppdv{Q_n(\be)}{\be}{\be'}=\frac{2}{n}\sumn\pdv{f_i}{\be}\pdv{f_i}{\be'}-\frac{2}{n}\sumn\br{y_i-f_i}\ppdv{f_i}{\be}{\be'}
+& \pto & 
+\ppdv{Q_\infty{\be}}{\be}{\be'}=2\E{\pdv{f_i}{\be}\pdv{f_i}{\be'}}-2\E{y_i-f_i}\ppdv{f_i}{\be}{\be'}. 
+\earc
+Hence, the minimizer $\hat{\be}$ of $Q_n(\be)$ is defined by 
+\[
+  \pdv{Q_n(\hat{\be})}{\be}=\frac{-2}{n}\sumn\br{y_i-\hat{f}_i}\pdv{\hat{f}_i}{\be}=0.
+\]
+We here use computers to find the minimizer such as the Newton method.
+
+A natural question we need to care is when we will have $\hat{\be}\pto\be_\infty$ to allow the 
+asymptotic derivation. (Reference: Ch7, Hayashi)
+\begin{itemize}
+  \item If $Q_n(\be)\pto Q_\infty(\be)$ uniformly, the set of candidate parameters $\theta$ 
+    is compact. Therefore, $\hat{\be}\pto\be_\infty$.
+  \item If $Q_n(\be)\pto Q_\infty(\be)$, and $Q_n(\be)$ is a convex and continuous function, 
+    then $\hat{\be}\pto\beta_\infty$.
+\end{itemize}
+
+\section{Asymptotic Distribution}
+We apply the \hl{mean value theorem} to derive the asymptotic distribution.
+\[
+  \pdv{Q_n\br{\hat{\beta}}}{\beta}=\pdv{Q_n(\beta_\infty)}{\beta}
+  +\ppdv{Q_n(\hl{\beta_m})}{\beta}{\beta'}\br{\hat{\be}-\beta},
+\]
+where $\be_m\in[\hat{\be},\be_\infty]$. Since $\hat{\be}\pto\beta_\infty$,
+therefore, it gives $\be_m\pto\be_\infty$.
+Moreover, re-writting and re-scaling the NLS problem as an asymptotic form gives 
+\[
+  \sqrt{n}\br{\hat{\be}-\be_\infty}=\br{\ppdv{Q_n(\be_m)}{\beta}{\beta'}}\inv 
+  \br{\hl{-\sqrt{n}}\pdv{Q_n(\be_\infty)}{\be}}.
+\]
+Now, we assume that  
+\[
+  \hl{\sqrt{n}\pdv{Q_n(\be_\infty)}{\be}\dto\nor{0,\plinf\br{n\pdv{Q_n(\be_\infty)}{\beta}\pdv{Q_n(\be_\infty)}{\be'}}}},
+\]
+if such the assumption is correct,
+then the distribution of $\sqrt{n}\br{\hat{\be}-\be_\infty}$ asymptotes to 
+\[
+  \sqrt{n}\br{\hat{\beta}-\beta_\infty}\dto 
+  \nor{0,\br{\plinf\ppdv{Q_n(\be_\infty)}{\beta}{\beta'}}\inv\br{\plinf n\pdv{Q_n(\be_\infty)}{\be}\pdv{Q_n(\be_\infty)}{\be'}}\br{\plinf\ppdv{Q_n(\be_\infty)}{\beta}{\beta'}}\inv}.
+\]
+\subsection{Nonlinear case}
+For the nonlinear case, we have 
+\[
+  \pdv{Q_n(\be_\infty)}{\be}=\frac{-2}{n}\sumn e_i\pdv{f_i(\be_\infty)}{\be},
+\]
+where $e_i\equiv y_i-f(x_i;\be)$.
+
+Cancelling $-2$ for convenience and \hl{assuming the assumption is satisfied}, we obtain 
+\[
+  \sqrt{n}\frn\sumn\pdv{f_i(\be_\infty)}{\be}e_i\dto\nor{0,\E{\pdv{f_i(\be_\infty)}{\be}\pdv{f_i(\be_\infty)}{\be'}e_i^2}}.
+\]
+Moreover,
+\[
+  \ppdv{Q_n(\be_\infty)}{\be}{\be'}\pto2\E{\pdv{f_i(\be_\infty)}{\be}\pdv{f_i(\be_\infty)}{\be'}}+0,
+\]
+and 
+\[
+  \sqrt{n}(\hat{\beta}-\be_\infty)\dto\nor{0,Cov},
+\]
+where 
+\barc 
+Cov & = & 
+\br{\E{\pdv{f_i(\be_\infty)}{\be}\pdv{f_i(\be_\infty)}{\be'}}}\inv
+\br{\E{\pdv{f_i(\be_\infty)}{\be}\pdv{f_i(\be_\infty)}{\be'}}e_i^2}
+\br{\E{\pdv{f_i(\be_\infty)}{\be}\pdv{f_i(\be_\infty)}{\be'}}}\inv \\
+& = & \si^2\br{\E{\pdv{f_i(\be_\infty)}{\be}\pdv{f_i(\be_\infty)}{\be'}}}\inv 
+\earc 
+if we assume that $\E{\pdv{f_i(\be_\infty)}{\be}\pdv{f_i(\be_\infty)}{\be'}}=\si^2$.
+
+\hl{Honho: Trust me, all 2 and -2 will be canceled since there are inverse in the distribution,
+just algebra operation.}
+
+\section{Prediction Errors and Model Selection}
+Assume the \hl{true} model is $y_i=f(x_i;\beta_0)+e_i$, where we denote $\be_0$ by \hl{true parameters}
+for convenience.
+Applying 2nd-order Taylor approximations, we have 
+\[
+  Q_n(\hat{\beta})=Q_n(\be_0)+\pdv{Q_n(\be_0)}{\be\hl{'}}\br{\hat{\be}-\be_0}
+  +\frac{1}{2}\br{\hat{\be}-\be_0}\ppdv{Q_n(\be_0)}{\be}{\be'}\br{\hat{\be}-\be_0}
+  +\text{ higher order terms.}
+\]
+Be careful that $Q_n(\cdot)$ is $1\times1$, 
+$\pdv{Q_n(\be_0)}{\be\hl{'}}$ is $1\times k$, and $\br{\hat{\be}-\be_0}$ is $k\times k$.
+
+Moreover, the out-sample case is in the similar form:
+\[
+  Q^{out}_n(\hat{\beta})=Q^{out}_n(\be_0)+\pdv{Q^{out}_n(\be_0)}{\be\hl{'}}\br{\hat{\be}-\be_0}
+  +\frac{1}{2}\br{\hat{\be}-\be_0}\ppdv{Q^{out}_n(\be_0)}{\be}{\be'}\br{\hat{\be}-\be_0}
+  +\text{ higher order terms.}
+\]
+By FOC (\why), therefore, 
+\[
+  \begin{array}{RL}
+    & 0=\pdv{Q_n(\hat{\be})}{\be}=\pdv{Q_n(\be_0)}{\be}+\ppdv{Q_n(\be_0)}{\be}{\be'}\br{\hat{\be}-\be_0}+\cdots \\
+    \iff & \br{\hat{\be}-\be_0}=\br{\ppdv{Q_n(\be_0)}{\be}{\be'}}\inv\br{\hl{-}\pdv{Q_n(\be_0)}{\be}}.
+  \end{array}
+\]
+Substituting $\br{\hat{\be}-\be_0}$ into the original 2nd-order Taylor approximation, we have 
+\[
+  \begin{array}{L}
+    Q_n(\hat{\be})=Q_n(\be_0)-\frac{1}{2}\br{\pdv{Q_n(\be_0)}{\be}}'\ppdv{Q_n(\be_0)}{\be}{\be'}\inv\pdv{Q_n(\be_0)}{\be} \\
+    Q_n^{out}(\hat{\be})=Q^{out}_n(\be_0)-\br{\pdv{Q^{out}_n(\be_0)}{\be}}'\ppdv{Q^{out}_n(\be_0)}{\be}{\be'}\inv\pdv{Q^{out}_n(\be_0)}{\be}
+    +\frac{1}{2}(pQ_0)'(ppQ_0)\inv(ppQ_0)(ppQ)\inv(pQ).
+\end{array}
+\]
+Notice a trick that taking expectation w.r.t. $X$ to all terms above is available, therefore,
+it alters 
+
+%% Set E_x function
+
+
+\end{document}
+
+

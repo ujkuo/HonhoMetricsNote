@@ -1,0 +1,310 @@
+\documentclass{Theme}
+\newcommand{\pG}{\partial G}
+\week{4}
+\date{Nov. 24, 2022}
+
+\begin{document}
+\ujtitle 
+
+\section{Recap}
+As usual, 
+given the data 
+\[
+  \begin{array}{LLL}
+    y_1, & y_2,\cdots,y_n & \text{dependent variables} \\
+    1\times1 & & \\
+    x_1, & x_2,\cdots,x_n & \text{independent variables,} \\
+    k\times1 & &
+\end{array}
+\]
+we define
+\barc
+Y\equiv\col{y_1 \\ y_2 \\ \vdots \\ y_n} & \text{and}
+& X\equiv\col{x_1' \\ x_2' \\ \vdots \\ x_n'},
+\earc
+where $Y$ and $X$ are $n\times1$ and $n\times k$ matrices, respectively.
+Moreover, given the criterion / objective function $Q_n(\be)$ and 
+parameters of interest $\beta$ ($k\times1$ vector),
+for any $\beta$,
+\[
+Q_n(\be)=\frn\sumn(\br{y_i-\hat{y}_i})^2,
+\]
+where $\hat{y}_i$ is the predicted $y_i$. Therefore for the linear and nonlinear case LS, 
+we should obtain
+\[
+  \begin{array}{RL}
+    \hat{y}_i=x_i'\hat{\be} & \text{For the linear LS} \\
+    \hat{y}_i=f(x_i;\hat{\hl{\theta}}) & \text{For the nonlinear LS.}
+\end{array}
+\]
+where $\hat{\theta}$ is $p\times1$. Here we want to specified the dimension ofr the estimation
+might not identical with the parameters.
+Now, $\hat{\theta}$ is defined by FOC 
+\[
+  \hl{\pdv{Q_n(\hat{\theta})}{\theta}=0}.
+\]
+For the case of the linear LS, we have a \hl{closed-form} solution.
+On the other hand, for the case of the nonlinear LS, we do not have the closed-form solution as
+\barc 
+\pdv{Q_n(\theta)}{\theta}=\frac{-2}{n}\sumn\pdv{f_i}{\tht}(y_i-f_i)
+& \tand &
+\ppdv{Q_n(\tht)}{\tht}{\tht'}=\frac{2}{n}\sumn\pdv{f_i}{\tht}\pdv{f_i}{\tht'}
+-\frac{2}{n}\sumn\ppdv{f_i}{\tht}{\tht'}\cancelto{e_i}{(y_i-f_i)}.
+\earc
+Note that $\pdv{Q_n(\tht)}{\tht}$ and $\ppdv{Q_n(\tht)}{\tht}{\tht'}$ are $p\times1$
+and $p\times p$, respectively.
+
+\begin{remark}
+$\hat{\theta}=\argmin Q_N(\theta)$ and $\theta_\infty =\argmin Q_\infty(\tht)$.
+\end{remark}
+
+Now by applying the Mean Value Theorem, we obtain 
+\[
+  \pdv{Q_n\br{\hat{\tht}}}{\tht}=\pdv{Q_n(\tht_\infty)}{\tht}
+  +\ppdv{Q_n(\hl{\tht_m})}{\tht}{\tht'}\br{\hat{\tht}-\tht_\infty},
+\]
+where $\tht_m\in[\hat{\tht},\be_\infty]$. Since $\hat{\tht}\pto\tht_\infty$,
+therefore, it gives $\tht_m\pto\tht_\infty$.
+
+Thus, if we have 
+\barc 
+\sqrt{n}\pdv{Q_n(\tht_\infty)}{\tht} & \dto & \nor{0,Cov},
+\earc
+where 
+\barc 
+Cov & \equiv & \plinf\br{\sqrt{n}\pdv{Q_n(\tht_\infty)}{\tht}\sqrt{n}\pdv{Q_n(\tht_\infty)}{\tht'}}.
+\earc
+If we next define $M\equiv\plinf\ppdv{Q_n(\tht_m)}{\tht}{\tht'}$,
+then 
+\barc 
+\sqrt{n}(\hth-\tht_\infty) & \dto & \nor{0,MCovM'}.
+\earc
+
+\subsection{Prediction Errors}
+Given the data $\mu_i=\pr{y_i\mid x_i}$, and the in-sample and out-sample models
+\barc 
+y_i=\mu_i+e_i & \tand & y_i^{out}=\mu_i+e_i^{out},
+\earc 
+where we have to notice that $\hl{x_i^{out}=x_i}$.
+Additionally, we define the proejction matrix 
+$P\equiv I_n-X(X'X)\inv X'$.
+\subsubsection{Linear LS}
+\barc 
+\E{\frn\sumn(y_i\hyi)^2\mid X} & = & \si^2-\frac{k}{n}\si^2+\frn\mu'(I_n-P)\mu \\
+\E{\frn\sumn(\yio-\hyi)^2\mid X} & = & \si^2+\frac{k}{n}\si^2+\frn\mu'(I_n-P)\mu,
+\earc
+where $\frn\mu'(I_n-P)\mu$ is called the approximation errors
+\subsubsection{Nonliear LS}
+\barc 
+\E{\frn\sumn(y_i\hyi)^2\mid X} & = & \si^2-\frac{p}{n}\si^2+\text{nonlinear terms} \\
+\E{\frn\sumn(\yio-\hyi)^2\mid X} & = & \si^2+\frac{k}{n}\si^2+\text{nonlinear terms}.
+\earc
+\begin{remark}
+Note that $\tht_0$ is the true parameter, and the objective function version is 
+\barc 
+  \E{Q_n(\tht)\mid X}=\E{Q_n(\tht_0)\mid X} - \frac{1}{2}\E{\pdv{Q_n(\tht_0)}{\tht'}\br{\ppdv{Q_n(\tht_0)}{\tht}{\tht'}}\inv\pdv{Q_n(\tht_0)}{\tht} \mid X} \\ 
+  \E{Q_n^{out}(\tht)\mid X}=\E{Q_n^{out}(\tht_0)\mid X} - \frac{1}{2}\E{\pdv{Q_n^{out}(\tht_0)}{\tht'}\br{\ppdv{Q_n^{out}(\tht_0)}{\tht}{\tht'}}\inv\pdv{Q_n^{out}(\tht_0)}{\tht} \mid X}.
+\earc
+\end{remark}
+
+\section{Minimum Distance Estimations and Generalized Method of Moments (GMM) Estimations}
+Suppose we have an economic model which implies that the endogenous variables $y_i'$'s are 
+determined by a set of $\hl{\ell}$ equations. That is,
+\[
+  \E{g(y_i,x_i,\be)}=C,
+\]
+where $\be$ is a $k\times1$ vector, and $g(\cdot)$ and $C$ are $\hl{\ell\times1}$
+Assume $C=0$ WLOG, we define 
+\barc 
+g_i\equiv g(y_i,x_i,\be) & \tand & \hat{g}_i\equiv g(y_i,x_i,\hat{\beta})
+\earc 
+
+For the case where $\ell=k$, we can just set 
+\[
+  \frn\sumn g(y_i,x_i,\hat{\beta})=0, 
+\]
+and we must notice that \hl{${\ell=k}$ is a special case.} Such a special case leads to 
+\barc 
+\E{x_ie_i=0} & \tand &
+\frn\sumn x_ie_i=\frn\sumn x_i(y_i-x_i'\be)=0.
+\earc 
+
+For the case where $\ell>k$, there may not exist $\hb$ such that 
+\[
+  \frn\sumn g(x_i,y_i,\hb)=0.
+\]
+Hence, we find $\hb$ such that the \hl{distance} between $\frn\sumn  g_i$ and $0$ ($\ell\times1$ vector) is 
+minimized. To elaborate, we want to minimize 
+\[
+  \overbrace{Q_n(\be)}^{\mathrm{distance}}=\overbrace{\br{\frn\sumn g_i-0}'}^{1\times \ell}\overbrace{\hat{W}}^{\ell\times \ell}\overbrace{\br{\frn\sumn g_i-0}}^{\ell\times 1}.
+\]
+Note that \hl{we want to select a weight matrix satisfying $\hat{W}\pto W$ ($W$ is some matrix, not the true model), 
+symmetricity, and positive-definition.}
+The weight matrix is our choice since the weight matrix sometimes is the function of our data, therefore, we want such a matrix
+holds some good properties.
+\begin{remark}
+Under some assumptions, the choice of the weight matrix will not affect the consistency.
+  \hl{However, it affects the variance,} and that's why we need to \hl{choose} the proper weight matrix.
+\end{remark}
+\begin{remark}
+For any $\ell\times \ell$ squared matrix $M$, if $V'MV >0$ for any $\ell\times1$ vector $V$,
+$M$ is positive definite.
+
+Now, consider $V'MV$ with $M=I_\ell$, we obtain 
+  \[
+    V'MV = V'V =  \sum_{i=1}^\ell v_i^2.
+  \]
+Given $M\neq I_\ell$, it alters to 
+  \[
+    V'MV = \sum_{i=1}^\ell\sum_{j=1}^\ell v_iM_{ij}v_j.
+  \]
+\end{remark}
+Now define $\bar{g}_n\equiv\frn\sumn g_i$, the objective function alters to 
+$Q_n(\beta)=\bar{g}_n'\hat{W}\bar{g}_n$, where $\bgn'$ and  $\hat{W}$
+are $1\times\ell$ and $\ell\times\ell$. The FOC gives 
+\[
+  0=\overbrace{\pdv{Q_n(\hb)}{\be}}^{k\times 1} = 2\overbrace{\pdv{\hat{\bgn'}}{\be}}^{k\times\ell}\hat{W}\overbrace{\hat{\bgn}}^{\ell\times1},
+\]
+and the second derivative is 
+\[
+  \overbrace{\ppdv{Q_n(\be)}{\be}{\be'}}^{k\times k}=
+  \pdv{}{\be}\br{\pdv{Q_n(\be)}{\be}}'
+  =2\overbrace{\pdv{\bgn'}{\be}}^{k\times\ell}\hat{W}\overbrace{\pdv{\bgn}{\be'}}^{\ell\times k}
+  +2\overbrace{\pdv{}{\be}}^{k\times1}\overbrace{\br{\pdv{\bgn'}{\be}\hat{W}\bgn}'}^{1\times k}.
+\]
+Next whe apply the mean value theorem to $\bgn(\be)$ with denoting $\be_0$ and $\be_m$ by 
+the true parameters and the mean value parameters. That is, 
+\[
+  \hat{\bgn}\equiv\bgn(\hb)=\bgn(\be_0)+\pdv{\bgn(\be_m)}{\be\hl{'}}\br{\hb-\be_0}.
+\]
+Suppose $\hb\pto\be_0$ and correspondingly $\be_m\pto \be_0$ as well, substituting $\hat{\bgn}$ into the FOC gives 
+\[
+  0=\pdv{Q_n(\be)}{\be}=2\pdv{\bgn(\hb)'}{\be}\hat{W}\br{\bgn(\be_0)+\pdv{\bgn(\be_m)}{\be\hl{'}}(\hb-\be_0)}.
+\]
+Rearranging the above equation gives 
+\[
+  \hl{\sqrt{n}}(\hb-\be_0)=
+  \br{\overbrace{\pdv{\bgn(\hb)'}{\be}}^{k\times\ell}\hat{W}\pdv{\bgn(\be_m)}{\be'}}\inv
+  \br{-\pdv{\bgn(\hb)'}{\be}\hat{W}\overbrace{\hl{\sqrt{n}}\bgn(\be_0)}^{\ell\times1}},
+\]
+where 
+\barc 
+\sqrt{n}\bgn(\be_0) & = & \sqrt{n}\overbrace{\frn\sumn g(y_i,x_i,\be_0)}^{\pto\E{g_i}=0} \\
+& \dto & \nor{0,\E{g_i(\be_0)g_i(\be_0)'}} \\
+& \equiv & \nor{0,Cov}.
+\earc 
+In addition, we also denote the partial derivative by $\pG$ for convenience 
+\[
+  \overbrace{\partial G}^{k\times\ell}\equiv\plinf\pdv{\bgn(\hb)\hl{'}}{\be}=\plinf\pdv{\bgn(\be_m)\hl{'}}{\be}.
+\]
+The distribution of $\sqrt{n}(\hb-\be_0)$ is, finally, 
+\barc 
+\sqrt{n}(\hb-\be_0) & \dto & \br{\pG W\pG'}\inv\br{-\pG W\nor{0,Cov}} \\
+& = & \nor{0, \br{\pG W\pG'}\inv\pG W Cov W' \pG' \br{\pG W\pG'}\inv}.
+\earc  
+\begin{remark}
+We did not prove the consistency here, but we know that $\be_0\equiv\argmin Q_\infty(\be)$ exists 
+under some restrictions of $Q_n$ and $Q_\infty$, which might implies $\hb\pto\be_0$.
+\end{remark}
+\begin{remark}
+We can here easily observe that the weight matrix does not effect the consistency; however,
+it affects the efficiency.
+\end{remark}
+\subsection{Most efficient weight matrix}
+Suppose $W=Cov\inv$, then the asymptotic covariance of $\sqrt{n}(\hb-\be_0)$ is 
+\[
+\br{\pG Cov\inv\pG'}\inv\pG Cov\inv Cov Cov\inv \pG' \br{\pG Cov\inv\pG'}\inv
+=\br{\pG Cov\inv\pG'}\inv. 
+\]
+\begin{thm}
+For all $W$,  
+  \[
+    \br{\pG W\pG'}\inv\pG W Cov W' \pG' \br{\pG W\pG'}\inv \geq \br{\pG Cov\inv\pG'}\inv.
+  \]
+The proof of the theorem did not be completed here. Go to wiki to see more, said by Hoho.
+\end{thm}
+\begin{remark}
+FOr any two square matrices $M_1, M_2$, we say 
+\barc 
+  M_1\geq M_2 & \iff & M_1-M_2\geq 0,
+\earc 
+Note that $\geq 0$ for the matrix operation means the positive semi-definition.
+\end{remark}
+
+\subsection{Procedures of efficient GMM}
+To clarify procedures of efficient GMM, we conclude 
+\begin{enumerate}
+\item Choose $\hat{W}=W=I_\ell$, then we have the consistent estimator $\hb$.
+\item Obtain 
+  \[
+    \hat{Cov}\equiv\overbrace{\frn\sumn g(y_i,x_i,\hb)g(y_i,x_i,\hb)'}^{\hat{W}\inv}
+    \pto \overbrace{\E{g_i(\be_0)g_i(\be_0)'}}^{W\inv}\equiv Cov.
+  \]
+\item Do the minimized distance estimation again with $\hat{W}=\hat{Cov}\inv$.
+\end{enumerate}
+After the procedures above, we that obtain $\hb_{efficient}$.
+
+\subsection{Notes on Consistency}
+We've already known that given some objective finctions, we have 
+\barc 
+Q_n(\theta)\pto Q_\infty(\tht) 
+& \tand & 
+\frn\sumn(y_i-\hyi)^2 \pto \E{y_i-\hyi}^2
+\earc 
+for (point-wisely, i.e., for each $\tht_i$) consistency. Extending such idea the the previous matrix gives 
+\[
+  \br{\frn\sumn g_i}'\hat{W}\br{\frn\sumn g_i} \pto (\E{g_i})'W(\E{g_i})=0.
+\]
+
+\subsection{Two commonly used theorems for consistency}
+Here we introduce two commonly used theorems for consistency.
+\begin{enumerate}
+\item If $\tht$ belongs to a compact (i.e., closed and bounded) set, 
+  it gives $Q_n(\tht)\pto Q_\infty(\tht)$ \hl{uniformly}.
+    Such the convergence reveals $\hat{\tht}_n\pto\tht_\infty$.
+
+Note that the point-wise convergence means $|Q_n(\tht)-Q_\infty(\tht)|\pto 0$,
+    and the uniform convergence means $\sup_\tht |Q_n(\tht)-Q_\infty(\tht)|\pto 0$.
+  \item Assume $Q_n(\tht)$ is convex for all $n$,
+    we can also claim $\hat{\tht}_n\pto \tht_\infty$.
+\end{enumerate}
+This subsection refers to Large Sample Theory in the Handbook of Econometrics, Hayashi Ch7-2.
+
+\section{General Notes}
+We here give some general notes on econometrics through the whole class.
+\begin{enumerate}
+\item The mathematical arguments are appliable to any \hl{extreme} estimations. 
+  That is, 
+\[
+  \begin{array}{RL}
+    \text{LS case:} & Q_n(\tht)=\frn\sumn(y_i-\hyi)^2\pto \E{y_i-\hyi}^2 \\ 
+    \text{GMM case:} & Q_n(\tht)=\bgn'\hat{W}\bgn\pto0 \\
+    \text{ML case:} & Q_n(\tht)=\frn\sumn\log f(y_i,x_i,\tht)\pto\E{\log f(y_i,x_i,\tht}.
+\end{array}
+\]
+\begin{itemize}
+  \item LS is a special case of GMM where 
+    $y_i=f(x_i,\be)+e_i$, $g_i=x_ie_i$ (moment conditions), and $\E{g_i}=\E{x_ie_i}=0$.
+  \item 
+    LS is a special case of ML where $y_i=f(x_i,\be)+e_i$ and 
+    $e_i\sim$ Normal.
+  \item Instrumental variable estimation belongs to GMM, where 
+    $g_i=z_ie_i$ and $\E{g_i}=\E{z_ie_i}=0$.
+  \item Mostly, ML is the \hl{most efficient} in the sense of having the lowest asymptotic covariance.
+    The reason is that ML use the information in the density.
+  \item Denote $\theta$ by a $k\times1$ parameter vector, $\hat{\tht}$ by the $k\times 1$ estimator,
+    $\theta_0$ by the $k\times1$ true parameters vector, and $Cov$ by the $k\times k$ asymptotic covariance.
+    We have 
+    \barc 
+    \sqrt{n}(\hat{\tht}-\tht_0)\dto\nor{0,Cov} & \tand & 
+    \frac{\sqrt{n}(\hat{\tht}_j-\theta_{0,j})}{\sqrt{Cov_{jj}}}\dto\nor{0,1}.
+    \earc
+  \item Mostly, the objective function is with the \hl{quadratic form}, which leads to there
+    distribution asymptotes to \hl{chi-square distribution}. \why
+\end{itemize}
+
+
+\end{enumerate}
+
+\end{document}
+

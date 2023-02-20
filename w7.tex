@@ -1,0 +1,286 @@
+\documentclass{Theme}
+\week{7}
+\date{Dec. 15, 2022}
+
+%\student[$\star$]{Collaborators\footnote{Yu-Chieh thanks their supports to take photo and provide notes.}:}{Whiney Yu, Tzu-Yue Huang}
+%\affil[$\star$]{Department of Economics, National Taiwan University}
+
+\newcommand{\jb}{\mathcal{J}\left(\beta\right)}
+\newcommand{\lf}{L\br{\mu,\hat{\mu}}}
+
+\begin{document}
+\ujtitle 
+\section{Recap}
+\subsection{Bayesian Methods}
+Given the \iid\ data $y_1,\cdots,y_n$,  the density/likelihood 
+$f(y_1,\cdots,y_n\mid\tht)=\prod_{i=1}^nf(y_i\mid\tht)$ ($\pr{\text{data}\mid\tht}$),
+the \hl{prior density} $g(\tht)$, and the \hl{marginal density} $\int_\tht f(y_1,\cdots,y_n\mid\tht)g(\tht)d\tht=f(y_1,\cdots,y_n)$
+($\pr{\text{data}}$),
+we can conduct the \hl{posterior density}
+\[
+  \overbrace{f(\tht\mid y_1\cdots y_n)}^{\pr{\tht\mid\text{data}}}=\frac{f(y_1,\cdots,y_n\mid\tht)g(\tht)}{f(y_1,\cdots,y_n)}
+\]
+by Baye's rule.
+
+\section{Bayesian, Empirical Bayes, and James-Stein Shrinkege}
+{\it (This part refers to the Ch1, Large-Scale Inference, Bradley Efron. Note that the usage of $g()$ and $f()$ below is 
+different with above.)}
+
+\subsection{Settings}
+The setting is described as following.
+The parameters follow the distribution of density $\mu\sim g(\ )$ (prior), and the data is given by 
+$z\sim f(z\mid\mu)$ (likelihood), the marginal density is, therefore, 
+\[
+  f(z)=\int_\mu f(z\mid\mu)g(\mu)d\mu.
+\]
+The posterior density is computed by 
+\[
+  g(\mu\mid z)=\frac{g(\mu)f(z\mid\mu)}{f(z)}.
+\]
+
+The statistical problem is that we have independent observations from the distribution
+$z_1,\cdots,z_N$, and we want to estimate $\mu_1\cdots,\mu_N$.
+
+\subsection{Assumptions}
+The prior of parameters follows $\mu\sim\nor{0,A}$, and the likelihood of observations is 
+$z\mid\mu\sim\nor{\mu,1}$.
+Under such assumptions, we can find the marginal distribution follows the normal distribution
+with the different variance
+$z\sim\nor{0,\hl{1+A}}$.
+Moreover, the posterior is 
+\[
+  \mu\mid z\sim\nor{Bz,B},
+\]
+where $B\equiv\frac{A}{A+1}$. Note that the posterior mean is $Bz$.
+
+We then estimate the parameters by \hl{maximum likelihood estimation (least information)} of $\mu_i$: 
+\barc 
+\hat{\mu}_i^{ML} & = & z_i \\ 
+\E{\hat{\mu}_i^{ML}\mid\mu_i} & = & \E{z_i\mid\mu_i}=\mu_i 
+\earc 
+
+Another approach is the \hl{Bayesian estimation (having information of prior)} of $\mu_i$, which calculates the \hl{posterior mean}:
+\[
+  \hat{\mu}_i^{Bayes}=Bz_i=\frac{A}{A+1}z_i.
+\]
+Note that \hl{the prior here is known.}
+
+Additionally, the \hl{Empirical Bayes estimation (partial information)} of $\mu_i$ is also approachable. Note that 
+\hl{the prior and $A$ here are unknown.} That is,
+\[
+  \hat{\mu}_i^{EB}=\hat{B}z_i,
+\]
+when $\hat{B}$ is an estimation of $B$.
+
+\subsection{Loss function}
+We define the loss function to evaluate the performance of estimations. Define 
+\barc
+\mu\equiv\col{\mu_1 \\ \vdots \\ \mu_N} & \text{and}
+& \hat{\mu}\equiv\col{\hat{\mu}_1 \\ \vdots \\ \hat{\mu}_N},
+\earc
+we yeild the loss function 
+\[
+  L\br{\mu,\hat{\mu}}=\norm{\hat{\mu}-\mu}^2=\sumN\br{\hat{\mu}_i-\mu_i}^2.
+\]
+In addition, we define the risk function as the conditional expectation of loss function:
+\[
+  R\br{\mu}=\E{L(\mu,\hat{\mu})\mid\mu}.
+\]
+
+\subsubsection{ML approach}
+The estimated $\mu$ under the ML approach is 
+\[
+  \hat{\mu}^{ML}=z\equiv\col{z_1 \\ \vdots \\ z_N},
+\]
+and the risk function is therefore
+\barc 
+\E{L(\mu,\hat{\mu})\mid\mu} & = & \E{\sumN\br{\hat{\mu}_i-\mu_i}^2\mid \mu} \\ [5mm]
+& = & \E{\sumN\br{z_i-\mu_i}^2\mid\mu} \\ [5mm]
+& = & n.
+\earc 
+Therefore, the overall Bayes risk is 
+\[
+  \E{\E{L\br{\hat{\mu},\mu}\mid\mu}\mid A} = N.
+\]
+
+\subsubsection{Bayesian approach}
+The estimated $\mu$ under the Bayesian approach is 
+\[
+  \hat{\mu}^{Bayes}=Bz=\frac{A}{A+1}z,
+\]
+and the risk function is 
+\barc 
+\E{\lf\mid\mu} & = & \E{\sumN\br{Bz_i-\mu_i}^2\mid\mu} \\[5mm]
+& = & \E{\sumN\br{B^2z^2+\mu_i^2-2Bz_i\mu_i}\mid\mu}\\[5mm]
+& = & \E{\sumn\br{B^2z_i^2+B^2\mu_i^2-2B^2z_i\mu_i+\mu_i^2-B^2\mu_i^2-2Bz_i\mu_i+2B^2z_i\mu_i}\mid\mu} \\[5mm]
+& = & \E{\sumN\br{B^2(z_i-\mu_i)^2+\mu_i^2-B^2\mu_i^2-2Bz_i\mu_i+2B^2z_i\mu_i}\mid\mu} \\ [5mm]
+& = & B^2N + \br{1-B^2-2B+2B^2}\sumN \mu_i^2 \\ [5mm]
+& = & B^2N+(1-B)^2\sumN \mu_i^2.
+\earc 
+The overall Bayes risk is therefore 
+\barc 
+\E{\E{\lf\mid\mu}\mid A} & = & \E{B^2N+(1-B)^2\sumN \mu_i^2\mid A} \\[5mm]
+& = & \br{\frac{A}{1+A}}^2N+\br{\frac{1}{1+A}}^2NA \\[5mm]
+& = & BN \hl{\leq N}.
+\earc
+
+Comparing the overall Bayes risk between ML approach and Bayesian, 
+\[
+  N-NB = \frac{1}{A+1}N.
+\]
+That is, if $A=1$, the difference (or the improvement) is $\frac{1}{2}N$.
+
+\subsubsection{Empirical Bayes}
+Under this setting, $B$ is \hl{unknown}, and we need to derive an unbiased 
+estimation of $B$:
+\barc 
+  z\mid\mu\sim\nor{\mu,I_N} & \tand & 
+  \mu\sim\nor{0,AI_N}.
+\earc 
+Note that $z, \mu,$ and $I_N$ here are $N\times1, N\times1$, and 
+$N\times N$, respectively.
+Then, the posterior is 
+\[
+  z\sim\nor{0,(A+1)I_N}.
+\]
+
+We define the auxiliary and variance-like 
+\barc 
+S=\sumN z_i^2 & \tand & 
+S\sim(A+1)\chi_N^2, 
+\earc 
+where $\chi^2_N$ is the Chi-square with the degree of freedom $N$.
+Now, we have 
+\[
+  \E{\frac{N-2}{S}}=\frac{1}{A+1}=1-B.
+\]
+
+\subsection{James-Stein Estimator}
+We consider a particular empirical bayes estimator called \hl{James-Stein estimator},
+which is defined as 
+\barc 
+\hat{\mu}^{JS}=\br{1-\frac{N-2}{S}}z & \tand & 
+\hat{\mu}_i^{JS}=\br{1-\frac{N-2}{S}}z_i.
+\earc 
+We can also evaluate James-Stein estimator by calculating the overall Bayes risk:
+\barc 
+\E{\E{\lf\mid\mu}\mid A} & = & \E{\E{\sumN\br{\br{1-\frac{N-2}{S}}z_i-\mu}^2\mid \mu}\mid A} \\ [5mm]
+& = & N\frac{A}{A+1}+\frac{2}{A+1}.
+\earc 
+That is, the order of overall Bayes risk is \hl{ML>James-Stein>Bayesian},
+due to their corresponding size of information.
+
+\begin{thm}
+  If $N\geq 3$, the James-Stein estimmator $\hat{\mu}^{JS}$ everywhere (for all $\mu$) dominates 
+  the ML estimator $\hat{\mu}^{ML}$ in terms of expected total squared error:
+  \barc 
+  \E{\norm{\hat{\mu}^{JS}-\mu}^2\mid\mu} < \E{\norm{\hat{\mu}^{ML}-\mu}^2\mid\mu}
+  & \text{i.e.} & 
+  \E{\sumN\br{\hat{\mu}^{JS}_i-\mu_i}^2\mid\mu} < \E{\sumN\br{\hat{\mu}^{ML}_i-\mu_i}^2\mid\mu}.
+  \earc 
+  The details of proof is not concluded here, but we mention that one common trick is to substract auxiliary term
+  \barc 
+    \E{\norm{\hat{\mu}^{JS}-\mu}^2\mid\mu} & = & \E{\norm{\hat{\mu}^{JS}-\hat{\mu}+\hat{\mu}-\mu}^2\mid\mu} \\ 
+    & = & N - \E{\frac{(N-2)^2}{S}\mid\mu},
+  \earc
+  which yeilds the result of the theorem.
+\end{thm}
+
+\begin{remark}
+  For the {\it shrinkege estimator}, we have 
+  \barc 
+  \hat{\mu}_i^S & = & (1-\xi_i)z_i+\xi_i\br{\frac{\sumN z_i}{N}} \\ 
+  & = & z_i - \xi_i\br{z_i-\frac{\sumN z_i}{N}}.
+  \earc
+\end{remark}
+
+\subsection{Regularized Estimation}
+In the least square, we minimize the objective function 
+\[ 
+\min \quad \sumn\br{y_i-x_i'\beta}^2.
+\]
+A similar one is the \hl{Ridge regression}, or called \hl{L2 regulization}:
+\[
+  \min \quad \overbrace{\sumn\br{y_i-x_i'\be}^2}^{\text{normal}}+\overbrace{\lambda\sum_{j=1}^k(\be_j\hl{-0})^2}^{\text{normal prior}}.
+\]
+(We try to give it the Bayesian interpretation) The last term can be regarded as the shrinkege to 0.
+
+Moreover, the \hl{LASSO}, or called \hl{L1 regulization} is to 
+\[
+  \min \quad \overbrace{\sumn\br{y_i-x_i'\be}^2}^{\text{normal}}+\overbrace{\lambda\sum_{j=1}^k|\be_j\hl{-0}|}^{\text{double expected Laplace}}.
+\]
+
+
+\section{Review of the Final}
+\subsection{Least Square}
+For the Least Square, we taught the linear and nonlinear models, and the objective function is to minimize
+\[
+  \min\quad\sumn\br{y_i-\hyi}^2.
+\]
+For a linear model, almost everything has a closed-form solution. For example, 
+\[
+  \hat{\be}=\br{\frac{1}{n}\sumn x_ix_i'}\inv\br{\frn\sumn x_iy_i}\pto 
+  \E{x_ix_i'}\inv\E{x_iy_i}=\beta_\infty,
+\]
+which yeild the unbiasedness and consistency. Additionally, 
+\[
+  \sqrn\br{\hb-\be_0}\dto\nor{0, \si^2\E{x_ix_i'}\inv}
+\]
+for $\E{e_i^2}=\si^2$ and $\E{e_ie_j}=0$.
+
+For a nonlinear model, we may not have a closed-form soultion. Hence, $\hb$ is defined by 
+the FOC:
+\[
+  \pdv{Q(\hth)}{\tht}=\frac{-2}{n}\pdv{f(x_i;\hth)}{\tht'}\br{y-f(x_i;\hth)}=0.
+\]
+If $\hth\pto\tht$ i.e., consistent, then we can use the Mean Value Theorem 
+\[
+  \pdv{Q_n\br{\hat{\tht}}}{\tht}=\pdv{Q_n(\tht_\infty)}{\tht}
+  +\ppdv{Q_n(\hl{\tht_m})}{\tht}{\tht'}\br{\hat{\tht}-\tht_\infty}.
+\]
+Since $\hth\pto\tht_0$, it yeilds $\tht_\infty\pto\tht_0$, and the distribution is 
+\[
+  \sqrn\br{\hth-\tht}\dto\nor{0,Cov}.
+\]
+Note that the correct covariance matrix is required.
+
+\subsection{Maximum likelihood}
+Given the density $f(y_i\mid x_i,\tht)$, the objective function is 
+\[
+  Q_\infty(\tht)=\frn\sumn\log f(y_i\mid x_i,\tht),
+\]
+and $\hat{\tht}_\infty$ is defined by $\pdv{Q_\infty(\hth)}{\tht}=0$.
+Suppose $\hth^{ML}\pto\tht_0$, we also use the MVT to derive 
+\[
+  \sqrn\br{\hth-\tht}\dto\nor{0,Cov}.
+\]
+
+\subsection{GMM and Minimum Distance estimators}
+There are $\ell$ moment conditions/equations, and we have 
+\barc 
+  \E{g(y_i,x_i,z_i,\tht)}=0 & \tand & 
+  \bgn\equiv\frn\sumn g(y_i,x_i,z_i,\tht)\approx 0,
+\earc 
+note that $\ell$ is larger than the number of parameters.
+The objective here is 
+\[
+  Q_\infty(\tht)=\bgn'\hat{W}\bgn,
+\]
+where $W$ is $\ell\times\ell$. Read Hayashi Ch7.3 to see the asymptotic normality,
+most efficient weight matrix, linear GMM (Ch3), and nonlinear GMM (Ch7.3).
+
+\subsection{Model selection}
+We have talked about the in-sample and out-sample prediction errors. The exam will only cover the 
+linear model.
+
+\subsection{Restricted estimation}
+Will only ask some simple questions in linear case (linear model and linear restriction).
+
+\subsection{Hypothesis testing}
+We have discussed the Wald statistics, the Lagrangian multiplier, and the likelihood ratio.
+All of them above converges to $\chi^2(k)$.
+
+\subsection{Shrinkege and Bayesian}
+
+
+\end{document}

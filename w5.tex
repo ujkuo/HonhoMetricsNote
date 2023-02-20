@@ -1,0 +1,303 @@
+\documentclass{Theme}
+\week{5}
+\date{Dec. 1, 2022}
+
+\student[$\star$]{Collaborators\footnote{Yu-Chieh thanks their supports to take photo and provide notes.}:}{Whiney Yu, Tzu-Yue Huang}
+\affil[$\star$]{Department of Economics, National Taiwan University}
+
+\newcommand{\jb}{\mathcal{J}\left(\beta\right)}
+
+\begin{document}
+\ujtitle 
+
+\section{Summary of Consistent Estimators}
+\begin{description}
+  \item[Least Squares:]
+    $Q_n\left(\tht\right)=\frn\sumn\left(y_i-\hyi\right)^2\pto Q_\infty\left(\tht\right)=\E{y_i-\hyi}^2$,
+    where $\hat{\tht}\equiv \argmin Q_n\left(\tht\right)$.
+  \item[Maximum Likelihood:]
+    $Q_n(\tht)=\frn\sumn\log f(y_i,x_i,\tht)\pto Q_\infty(\tht)=\E{\log f\left(y_i,x_i,\tht\right)}$,
+    where $\hat{\tht}\equiv \argmax Q_n\left(\tht\right)$.
+  \item[GMM, Minimum Distance Estimators:]
+    We have $\ell$ equations satisfying $\E{g\left(y_i,x_i,z_i,\tht\right)}=0$ such that
+    $\bgn\equiv\frn\sumn g_i$ and 
+    \[
+      Q_n\left(\tht\right)=\bgn'\hat{W}\bgn\pto Q_\infty\left(\tht\right)=\E{g_i}'W\E{g_i},
+    \]
+    where $\hat{\tht}\equiv\argmin Q_n\left(\tht\right)$.
+\end{description}
+
+\section{Restricted Estimation}
+{\it (This section refers to Hansen's textbook, CH8.)}
+
+Given $y_i=x_i'\be+e_i$ and $E{x_ie_i}=0$,
+we have $q$ linear constraints such that 
+\[
+  \overbrace{R'}^{q\times k}\overbrace{\be}^{k\times1}=\overbrace{C.}^{q\times 1}
+\]
+Note that the constraint is on the population (parameter space).
+
+\subsection{High-dimensional / regularized estimators}
+The objective function here might be 
+\[
+  \min_{\hat{\be}_i}\sumn\left(y_i-\hyi\right)^2+\lambda\sum_{j=1}^k\hat{\beta}^2_j,
+\]
+where the last term $\lambda\sum_{j=1}^k\hat{\beta}_j$ is the Lagrange 
+multiplier corresponding to $\sum_{j=1}^k\hat{\beta}^2_j\hl{\leq C}$. It is 
+called \hl{ridge regression}.
+
+In addition, the objective function can be also in the form 
+\[
+  \min_{\hat{\be}_i}\sumn\left(y_i-\hyi\right)^2+\lambda\sum_{j=1}^k|\hat{\beta}_j|,
+\]
+where the last term $\lambda\sum_{j=1}^k|\hat{\beta}_j|$ is the Lagrange 
+multiplier corresponding to $\sum_{j=1}^k|\hat{\beta}_j|\hl{\leq C}$. It is 
+called \hl{LASSO}.
+\begin{figure}[h!]
+\includegraphics[width=0.9\textwidth]{lasso.png}
+\caption{Visualization of the ridge regression and LASSO}
+\centering
+\end{figure}
+
+\subsection{Lagrange function}
+First, we define the sum of squared errors (SSE) as 
+\barc 
+SSE & = & \sumn\left(y_i-\hyi\right)^2 \\
+& = & \sumn\left(y_i-x_i'\be\right)^2 \\ 
+& = & \br{Y-X\be}'\br{Y-X\be} \\
+& = & Y\hl{'}Y-2Y'X\be+\be\hl{'}X\hl{'}X\be.
+\earc 
+Be careful about the dimension issues of each matrix: $Y$ is $n\times 1$,
+$X$ is $n\times k$, and $\be$ is $k\times1$.
+
+Combining SSE, restricted and regularized estimations, we can define the 
+Lagrange function as 
+\[
+  \lgr=\frac{1}{2}\br{Y'Y-2Y'X\be+\be'X'X\be}+
+  \overbrace{\lambda'\br{R'\be-C}}^{1\times g \text{ and } g\times1}, 
+\]
+where the fraction $\frac{1}{2}$ in the first term is used to cancel the 
+left coefficient $2$ after the derivation, and the second term is 
+the Lagrangem multiplier.
+
+Hence, the first partial derivative of the Lagrange function
+w.r.t. $\be$ and $\lbd$ is
+  \begin{align}
+    & \pdv{\lgr}{\be} = -X'Y+X'X\tilde{\be}+R\tilde{\lbd} = 0 \label{e1} \\
+    & \pdv{\lgr}{\lbd} =  R'\tilde{\be}-C = 0 \label{e2}.
+  \end{align}
+By solving the system to obtain $\tilde{\be}$ and $\tilde{\lbd}$,
+we can use $\tilde{\be}$ and $\tilde{\lbd}$ to denote the solutions to 
+restricted estimation problem.
+
+To solve the system, we first 
+pre-multiply \eqref{e1} by $R'\br{X'X}\inv$:
+\[
+  \begin{array}{RL}
+    & -R'\overbrace{\left(X'X\right)\inv X'Y}^{\hat{\beta}} + 
+    R'\left(X'X\right)\inv X'X\tilde{\be} + R'\left(X'X\right)\inv R \tilde{\lbd} = 0 \\
+    \iff & -R'\hat{\be} + R'\tib + R'\left(X'X\right)\inv R\til = 0 \\
+    \iff & R'\tib = R'\hat{\be} + R'\left(X'X\right)\inv R\til.
+\end{array}
+\]
+Next, we substitute $R'\hat{\be} + R'\left(X'X\right)\inv R\til$
+for $R'\tib$ in \eqref{e2} to solve $\til$:
+\[
+  \begin{array}{RL}
+    & R'\tib = C \\
+    \iff & R'\hat{\be} + R'\left(X'X\right)\inv R\til = C \\ 
+    \iff & \til = \br{R'\left(X'X\right)\inv R}\inv\br{R'\hab-C}.
+\end{array}
+\]
+Lastly, we substitute $\br{R'\left(X'X\right)\inv R}\inv\br{R'\hab-C}$ for  $\til$ 
+in \eqref{e1} to solve $\tib$: 
+\[
+\begin{array}{RL}
+  & -X'Y+X'X\tib + R\br{R'\left(X'X\right)\inv R}\inv\br{R'\hab-C} = 0 \\ 
+  \iff & \tib = \left(X'X\right)\inv X'Y-\left(X'X\right)\inv R\br{R'\left(X'X\right)\inv R}\inv\br{R'\hab-C} \\ 
+  \iff & \tib = \hab - R\br{R'\left(X'X\right)\inv R}\inv\br{R'\hab-C}.
+\end{array}
+\]
+Note that $R$ is $k\times q$.
+\begin{remark} 
+\quad
+ \begin{enumerate}
+   \item If $R'\hab-C=0$, then $\tib=\hab$.
+   \item $R'\left(X'X\right)\inv R$ is invertible \hl{only if $rank\left(R\right)=q$}.
+ \end{enumerate} 
+\end{remark}
+
+\subsubsection{Consistency}
+Now we discuss the consistency of the restricted estimation.
+If it is given $R'B=C$ and $\hab\pto\be_0$ (true $\be$), then we have 
+\barc 
+R'\hab-C\pto 0\ \tand\ \hab\pto\be_0 & \implies & \tib\pto\be. 
+\earc
+
+\subsubsection{Asymptotic normality}
+\barc 
+\sqrn\left(\tib-\be\right) & = & 
+\overbrace{\sqrn\left(\hab-\be\right)}^{\dto\nor{0,\overbrace{\br{E{x_ix_i'}}\inv}^{\equiv Q_{XX}\inv}\overbrace{\E{x_ix_i'e_i^2}}^{\equiv\Omega}\overbrace{\br{E{x_ix_i'}}\inv}^{\equiv Q_{XX}\inv}}}
+-\overbrace{\br{X'X}\inv R\br{R'\left(X'X\right)\inv R}\inv}^{\equiv \hat{M}\pto M}
+\overbrace{\sqrn\br{R'\hab-C}}^{R'\br{\sqrn\left(\hab-\be\right)}\ \text{since } C=R'\be} \\ 
+& \dto & \nor{0,Cov},
+\earc
+where $Cov$ is derived by $\sqrn\left(\tib-\be\right)\sqrn\left(\tib-\be\right)'$. Clearly,
+\barc 
+Cov & = & \sqrn\left(\tib-\be\right)\sqrn\left(\tib-\be\right)' \\
+& = & n\left(\hab-\be\right)\left(\hab-\be\right)'-n\hat{M}\left(\hab-\be\right)\left(\hab-\be\right)'
+-n\left(\hab-\be\right)\left(\hab-\be\right)'\hat{M}'
++n\hat{M}\left(\hab-\be\right)\left(\hab-\be\right)'\hat{M}' \\ 
+& \pto & V_\be - MV_\be-V_\be M'+MV_\be M' \\ 
+& = & V_\be -Q_{XX}\inv R\br{R'Q_{XX}\inv R}\inv R'V_\be 
+- V_\be R\br{R'Q_{XX}\inv R}\inv R'Q_{XX}\inv 
++ Q_{XX}\inv R\br{R'Q_{XX}\inv R}\inv R'V_\be.
+\earc 
+
+\subsection{Can we do better?}
+The answer is \hl{yes}. We may set up a minimun distance estimation as 
+\[
+  \begin{array}{RL}
+    \min_\be & \mathcal{J}\left(\be\right)=n\left(\hab-\be\right)'\hat{W}\left(\hab-\be\right) \\
+    \st & \text{Constraints},
+\end{array}
+\]
+where $\hab$ is an OLS estimator (treated as given).
+Note that $\beta$ here is a choive variable, not the true parameter.
+\begin{remark}
+  The Constrained Least Squares (CLS) is a special case where $\hat{W}=Q_{XX}$.
+\end{remark}
+Now, consider the SSE \hl{(what is $\be$ below. choice variable or true para?)} 
+\barc 
+SSE & = & \sumn \left(y_i-x_i'\be\right)^2 \\
+& = & \sumn\left(x_i'\hab+\hae_i-x_i'\be\right)^2 \\
+&=& \sumn\br{\hae_i+x_i'\left(\hab-\be\right)}^2 \\
+& = & \sumn\hae_i^2+\left(\hab-\be\right)'\br{\sumn x_ix_i'}\left(\hab-\be\right)
++ \cancelto{0}{2\sumn\hae_ix_i\left(\hab-\be\right)} \\
+&=& \sumn\hae_i^2+\left(\hab-\be\right)'\br{\sumn x_ix_i'}\left(\hab-\be\right),
+\earc 
+where we define $\mathcal{J}\left(\be\right)$ as the last term 
+$\br{\hab-\be}'\br{\sumn x_ix_i'}\left(\hab-\be\right)$ with $\hat{W}=\sumn x_ix_i'$.
+
+After obtaining $\jb$, we want to conduct the minimun distance estimation.
+That is, we solve the system
+\[
+  \begin{array}{RL}
+    \min_\be & \jb \\ 
+    \st & R'\be=C\quad\text{(Note that $R'\be_0=C$).}
+\end{array}
+\]
+The corresponding Lagrange function is
+\barc 
+\lgr & = & \frac{1}{2}\mathcal{J}\br{\be,\hat{W}}+\lbd'\br{R'\be-C} \\[3mm]
+& = & \frac{n}{2}\br{\hab-\be}'\hat{W}\br{\hab-\be}+\lbd'\br{R'\be-C},
+\earc 
+and FOC w.r.t. $\be$ and $\lbd$ yeilds
+  \begin{align}
+    & \pdv{\lgr}{\be} = -n\hat{W}\br{\hab-\tib}+R\tilde{\lbd} = 0 \label{e3} \\
+    & \pdv{\lgr}{\lbd} =  R'\tilde{\be}-C = 0 \label{e4}.
+  \end{align}
+Extending \eqref{e3} solves $\tib$: 
+\[
+  \tib=\hab-\frn\hat{W}\inv R\til \label{e5}.
+\]
+Substituting \eqref{e5} for \eqref{e4} gives 
+\barc 
+R'\br{\hab-\frn\hat{W}\inv R\til}-C=0 & \iff & \til=n\br{R'\hat{W}\inv R}\inv\br{R'\hab-C}.
+\earc
+Lastly, we use $\til$ to solve $\tib$ in \eqref{e3}:
+\[
+  \begin{array}{RL}
+    & -n\hat{W}\br{\hab-\tib}+nR \br{R'\hat{W}\inv R}\inv\br{R'\hab-C} = 0\\
+    \iff & \tib = \hab - \hat{W}\inv R\br{R'\hat{W}\inv R}\inv\br{R'\hab-C}.
+\end{array}
+\]
+\subsubsection{Consistency}
+Given $\hab\pto\be_0$ (true parameter) and $R'\hab-C\pto0$, we obtain 
+$\tib\pto\be_0$.
+
+\subsubsection{Asymptotic normality}
+\barc 
+\sqrn\br{\tib-\be_0} & = & \sqrn\br{\hab-\be_0}
+-\hat{W}\inv R\br{R'\hat{W}\inv R}\inv R'\overbrace{\sqrn\br{\hab-\be_0}}^{\dto\nor{0,V_\be}} \\
+& \dto & \nor{0,Cov},
+\earc 
+where $Cov$ is 
+\barc 
+Cov & = & V_\be - W\inv R\br{R'W\inv R}\inv R'V_\be 
+- V_\be R\br{R'W\inv R}\inv R'W\inv \\ 
+& & + W\inv R\br{R'W\inv R}\inv R'V_\be R\br{R'W\inv R}\inv R'W\inv.
+\earc
+It shows that the most efficient choice of $W$ is $V_\be\inv$. Therefore,
+the covariance matrix alters to 
+\[
+Cov = V_\be-V_\be R\br{R'V_\be\inv R}\inv R'V_\be.
+\]
+In general, $\tib_{MD}$ (minimun distance) is more efficient than 
+$\tib_{CLS}$.
+
+\subsection{Short summary}
+\begin{description}
+  \item[CLS:] We solve $\min_\be\sumn\br{y_i-x_i'\be}^2\quad\st\ R'\be=C\ \implies \tib_{CLS}$. 
+  \item[MD Estimation:] We solve 
+  $\min_\be\br{\hab-\be}'\hat{W}\br{\hab-\be}\quad\st\ R'\be=C\ \implies\tib_{MD}$.
+\end{description}
+Note that CLS is a special case where 
+\[
+  \hat{W}=\frn\sumn x_ix_i'\pto W=\E{x_ix_i'},
+\]
+but the efficient weight matrix is 
+\[
+  \hat{W}=\br{\frn\sumn x_ix_i'}\inv\br{\frn\sumn x_ix_i'\hae_i^2}\br{\frn\sumn x_ix_i'}\inv 
+  \pto W=\E{x_ix_i'}\inv\E{x_ix_i'e_i^2}\E{x_ix_i'}\inv\hl{=V_\be\inv}.
+\]
+Consequently, $\tib_{MD}$ is more efficient than $\tib_{CLS}$.
+
+\begin{example}
+Given a regression $y_i=x_{i1}'\be_1+x_{i2}'\be_2+e_i$ with a constraint
+  $\be_2=0$, we can show that the estimator from regression without $x_{2i}$
+  is identical with the CLS estimator with $\be_2=0$.
+
+  Another example can be found at Page. 269 in Hansen's textbook.
+\end{example}
+
+\section{Misspecification}
+{\it (This section refers to Hansen's textbook, CH8.13.)}
+
+In the case that $R'\be=C^\star \neq C$,
+the MD estimator alters to 
+\[
+  \tib_{MD}=\hab-\hat{W}\inv R\br{R'\hat{W}\inv R}\inv\br{R'\hab-C}
+  \pto \be-\hat{W}\inv R\br{R'\hat{W}\inv R}\inv\br{C^\star-C}\, \hl{\equiv\be_n^\star}.
+\]
+The asymptotic normality becomes 
+\barc 
+\sqrn\br{\tib_{MD}-\be_n^\star} & = & 
+\sqrn\br{\hab-\be}-\hat{W}\inv R\br{R'\hat{W}\inv R}\inv\sqrn\br{R'\hab-C^\star} \\ 
+& = & 
+\sqrn\br{\hab-\be}-\hat{W}\inv R\br{R'\hat{W}\inv R}\inv\sqrn\br{R'\hab-R'\be} \\ 
+& = & \br{I-\hat{W}\inv R\br{R'\hat{W}\inv R}\inv R}\sqrn\br{\hab-\be} \\ 
+& \dto & \nor{0,V_\be(W)},
+\earc 
+where $V_\be(W)$ is the same asymptotic covariance in the case without misspecification.
+\why
+
+Another case for the misspecification issue might be in the form of 
+$R'\be_n = C+\delta\sqrn$.
+In this case, $R'\hab-C = R'\br{\hab-\be_n}+\delta\sqrn$, and the MD estimator is 
+\barc 
+\tib_{MD} & = & \hab - \hat{W}\inv R\br{R'\hat{W}\inv R}\inv\br{R'\hab-C} \\
+& = & \hab - \hat{W}\inv R\br{R'\hat{W}\inv R}\inv R'\br{\hab-\be_n}
+- \hat{W}\inv R\br{R'\hat{W}\inv R}\inv R'\delta\sqrn.
+\earc
+The asymptotic normality in this case becomes 
+\barc 
+\sqrn\br{\tib_{MD}-\be_n} & = & 
+\overbrace{\sqrn\br{\hab-\be_n}}^{\dto\nor{0,V_\be}}
+-\hat{W}\inv R\br{R'\hat{W}\inv R}\inv R'\overbrace{\sqrn\br{\hab-\be_n}}^{\dto\nor{0,V_\be}}
+-\hat{W}\inv R\br{R'\hat{W}\inv R}\inv R'\delta \\ 
+& \dto & \nor{0,V_\be(W)}\overbrace{-\hat{W}\inv R\br{R'\hat{W}\inv R}\inv R'\delta}^{\equiv\delta^\star} \\
+& = & \nor{\delta^\star, V_\be(W)}.
+\earc 
+
+\end{document}
